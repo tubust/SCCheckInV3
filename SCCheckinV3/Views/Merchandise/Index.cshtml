@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SCCheckinV3.Merchandise>
+
+@{
+    ViewBag.Title = "Merchandise View";
+}
+
+<h2>Current Swing Club Merchandise</h2>
+
+<p>
+    @Html.ActionLink("Create New Item", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Item Name
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            Price
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ItemName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ItemDesc)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ItemPrice)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ItemID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ItemID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ItemID })
+        </td>
+    </tr>
+}
+
+</table>

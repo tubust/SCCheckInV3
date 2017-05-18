@@ -211,6 +211,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MemberController.cs" />
+    <Compile Include="Controllers\MerchandiseController.cs" />
     <Compile Include="Controllers\QuickCheckInController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="C__MigrationHistory.cs">
@@ -363,6 +365,16 @@
     <Content Include="Views\Report\DeletedMembers.cshtml" />
     <Content Include="Views\Report\CurrentlyPaidMembers.cshtml" />
     <Content Include="Views\Report\CompleteMemberList.cshtml" />
+    <Content Include="Views\Merchandise\Create.cshtml" />
+    <Content Include="Views\Merchandise\Delete.cshtml" />
+    <Content Include="Views\Merchandise\Details.cshtml" />
+    <Content Include="Views\Merchandise\Edit.cshtml" />
+    <Content Include="Views\Merchandise\Index.cshtml" />
+    <Content Include="Views\Member\Create.cshtml" />
+    <Content Include="Views\Member\Delete.cshtml" />
+    <Content Include="Views\Member\Details.cshtml" />
+    <Content Include="Views\Member\Edit.cshtml" />
+    <Content Include="Views\Member\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
