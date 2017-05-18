@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h2>Welcome to Swing Club Check In Version 3</h2>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <h3>Please @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" }) To The System.</h3>
+    }
+    else
+    {
+        <h3>Please Select a Function Below.</h3>
+    }
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Check In Functions</h3>
+            <a href="#">Add A Check In Record &raquo;</a><br />
+            <a href="#">Add A New Dancer &raquo;</a><br />
+        </div>
+        <div class="col-md-4">
+            <h3>Reports</h3>
+            <a href="#">Monthly Dancers &raquo;</a><br />
+            <a href="#">Dancers Currently In Lessons &raquo;</a><br />
+            <a href="#">Todays Dancers &raquo;</a><br />
+            <a href="#">Todays Paying Dancers &raquo;</a><br />
+            <a href="#">Today's Summary &raquo;</a><br />
+            <a href="#">Yearly Dues &raquo;</a><br />
+            <a href="#">Email List &raquo;</a><br />
+            <a href="#">Special Events &raquo;</a><br />
+            <a href="#">Unknown Dancers &raquo;</a><br />
+            <a href="#">Pink Dancers &raquo;</a><br />
+            <a href="#">Purple Dancers &raquo;</a><br />
+            <a href="#">Yellow Dancers &raquo;</a><br />
+            <a href="#">Green Dancers &raquo;</a><br />
+            <a href="#">Blue Dancers &raquo;</a><br />
+            <a href="#">Teachers &raquo;</a><br />
+            <a href="#">Birthdays &raquo;</a><br />
+            <a href="#">Members Modified in Database &raquo;</a><br />
+            <a href="#">Non Returning Members &raquo;</a><br />
+            <a href="#">Expiring Members &raquo;</a><br />
+            <a href="#">New Dancers &raquo;</a><br />
+            <a href="#">New Members &raquo;</a><br />
+            <a href="#">Renewing Members &raquo;</a><br />
+            <a href="#">Voided Entries &raquo;</a><br />
+            <a href="#">Deleted Members &raquo;</a><br />
+            <a href="#">Currently Paid Members &raquo;</a><br />
+            <a href="#">Complete Member List &raquo;</a><br />
+        </div>
+        <div class="col-md-4">
+            <h3>Administrative Functions</h3>
+            <a href="#">Edit Dancer Information &raquo;</a><br />
+            <a href="#">Add or Edit A Key Tag &raquo;</a><br />
+            <a href="#">Edit Merchandise &raquo;</a><br />
+            <a href="#">Edit Club Fees &raquo;</a><br />
+        </div>
+    </div>
+}
