@@ -1,0 +1,33 @@
+﻿@model SCCheckinV3.tblFee
+
+@{
+    ViewBag.Title = "Fee Details";
+}
+
+<h2>Fee Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FeeCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FeeCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FeeAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FeeAmount)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.FeeID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

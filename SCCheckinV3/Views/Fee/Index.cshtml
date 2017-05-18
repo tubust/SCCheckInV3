@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SCCheckinV3.tblFee>
+
+@{
+    ViewBag.Title = "Fee View";
+}
+
+<h2>Club Fee View</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FeeCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FeeAmount)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FeeCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FeeAmount)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.FeeID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.FeeID })
+        </td>
+    </tr>
+}
+
+</table>

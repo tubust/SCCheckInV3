@@ -19,8 +19,8 @@
     <div class="row">
         <div class="col-md-4">
             <h3>Check In Functions</h3>
-            <a href="#">Add A Check In Record &raquo;</a><br />
-            <a href="#">Add A New Dancer &raquo;</a><br />
+            @Html.ActionLink("Add a Check In Record","Index","Search")<br />
+            @Html.ActionLink("Create New Dancer", "Create", "Member")<br />
         </div>
         <div class="col-md-4">
             <h3>Reports</h3>
@@ -56,8 +56,8 @@
             <h3>Administrative Functions</h3>
             <a href="#">Edit Dancer Information &raquo;</a><br />
             <a href="#">Add or Edit A Key Tag &raquo;</a><br />
-            <a href="#">Edit Merchandise &raquo;</a><br />
-            <a href="#">Edit Club Fees &raquo;</a><br />
+            @Html.ActionLink("Edit Merchandise","Index","Merchandise")<br />
+            @Html.ActionLink("Edit Club Fees", "Index", "Fee")<br />
             <a href="#">Remove Administrators</a><br />
         </div>
     </div>
