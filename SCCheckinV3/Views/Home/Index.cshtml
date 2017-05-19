@@ -24,39 +24,39 @@
         </div>
         <div class="col-md-4">
             <h3>Reports</h3>
-            <a href="#">Monthly Dancers &raquo;</a><br />
-            <a href="#">Dancers Currently In Lessons &raquo;</a><br />
-            <a href="#">Todays Dancers &raquo;</a><br />
-            <a href="#">Todays Paying Dancers &raquo;</a><br />
-            <a href="#">Today's Summary &raquo;</a><br />
-            <a href="#">Yearly Dues &raquo;</a><br />
-            <a href="#">Year Over Year Sales</a><br />
-            <a href="#">Email List &raquo;</a><br />
-            <a href="#">Special Events &raquo;</a><br />
-            <a href="#">Unknown Dancers &raquo;</a><br />
-            <a href="#">Pink Dancers &raquo;</a><br />
-            <a href="#">Purple Dancers &raquo;</a><br />
-            <a href="#">Yellow Dancers &raquo;</a><br />
-            <a href="#">Green Dancers &raquo;</a><br />
-            <a href="#">Blue Dancers &raquo;</a><br />
-            <a href="#">Teachers &raquo;</a><br />
-            <a href="#">Birthdays &raquo;</a><br />
-            <a href="#">Members Modified in Database &raquo;</a><br />
-            <a href="#">Non Returning Members &raquo;</a><br />
-            <a href="#">Missing In Action</a><br />
-            <a href="#">Expiring Members &raquo;</a><br />
-            <a href="#">New Dancers &raquo;</a><br />
-            <a href="#">New Members &raquo;</a><br />
-            <a href="#">Renewing Members &raquo;</a><br />
-            <a href="#">Voided Entries &raquo;</a><br />
-            <a href="#">Deleted Members &raquo;</a><br />
-            <a href="#">Currently Paid Members &raquo;</a><br />
-            <a href="#">Complete Member List &raquo;</a><br />
+            @Html.ActionLink("Monthly Dancers","MonthlyDancers","Report")<br />
+            @Html.ActionLink("Dancers Currently In Lessons", "DancersCurrentlyInLessons", "Report")<br />
+            @Html.ActionLink("Todays Dancers", "TodaysDancers", "Report")<br />
+            @Html.ActionLink("Todays Paying Dancers","TodaysPayingDancers","Report")<br />
+            @Html.ActionLink("Todays Summary","TodaysSummary","Report")<br />
+            @Html.ActionLink("Yearly Dues","YearlyDues","Report")<br />
+            @Html.ActionLink("Year Over Year Sales","YearOverYearSales","Report")<br />
+            @Html.ActionLink("Email List", "EmailList", "Report")<br />
+            @Html.ActionLink("Special Events","SpecialEvents","Report")<br />
+            @Html.ActionLink("Unknown Dancers", "UnknownDancers","Report")<br />
+            @Html.ActionLink("Pink Dancers", "PinkDancers","Report")<br />
+            @Html.ActionLink("Purple Dancers", "PurpleDancers","Report")<br />
+            @Html.ActionLink("Yellow Dancers", "YellowDancers", "Report")<br />
+            @Html.ActionLink("Green Dancers", "GreenDancers", "Report")<br />
+            @Html.ActionLink("Blue Dancers","BlueDancers","Report")<br />
+            @Html.ActionLink("Teachers","Teachers","Report")<br />
+            @Html.ActionLink("Birthdays","Birthdays","Report")<br />
+            @Html.ActionLink("Members Modified In Database","MembersModifiedInDatabase","Report")<br />
+            @Html.ActionLink("Non Returning Members","NonReturningMembers","Report")<br />
+            @Html.ActionLink("Missing In Action","MissingInAction","Report")<br />
+            @Html.ActionLink("Expiring Members","ExpiringMembers","Report")<br />
+            @Html.ActionLink("New Dancers","NewDancers","Report")<br />
+            @Html.ActionLink("New Members","NewMembers","Report")<br />
+            @Html.ActionLink("Renewing Members","RenewingMembers","Report")<br />
+            @Html.ActionLink("Voided Entries", "Voided Entries","Report")<br />
+            @Html.ActionLink("Deleted Members","DeletedMembers","Report")<br />
+            @Html.ActionLink("Currently Paid Members","CurrentlyPaidMembers","Report")<br />
+            @Html.ActionLink("Complete Member List","CompleteMemberList","Report")<br />
         </div>
         <div class="col-md-4">
             <h3>Administrative Functions</h3>
             @Html.ActionLink("Edit Dancer Information","Index","Search", new { whoCalled = 1 }, null)<br />
-            <a href="~/Views/Search/Index/2">Edit Key Tag</a><br />
+            @Html.ActionLink("Edit Key Tag", "Index", "Search", new { whoCalled = 2 }, null)<br />
             @Html.ActionLink("Edit Merchandise","Index","Merchandise")<br />
             @Html.ActionLink("Edit Club Fees", "Index", "Fee")<br />
             @Html.ActionLink("Remove Administrators", "Index", "Admin")<br />
