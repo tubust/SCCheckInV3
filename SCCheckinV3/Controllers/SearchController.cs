@@ -24,6 +24,21 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult Index(int whoCalled, int? memberID)
+        {
+            switch (whoCalled)
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+            }
+            return View();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -43,6 +43,7 @@
             <a href="#">Birthdays &raquo;</a><br />
             <a href="#">Members Modified in Database &raquo;</a><br />
             <a href="#">Non Returning Members &raquo;</a><br />
+            <a href="#">Missing In Action</a><br />
             <a href="#">Expiring Members &raquo;</a><br />
             <a href="#">New Dancers &raquo;</a><br />
             <a href="#">New Members &raquo;</a><br />
@@ -54,8 +55,8 @@
         </div>
         <div class="col-md-4">
             <h3>Administrative Functions</h3>
-            <a href="#">Edit Dancer Information &raquo;</a><br />
-            <a href="#">Add or Edit A Key Tag &raquo;</a><br />
+            @Html.ActionLink("Edit Dancer Information","Index","Search", new { whoCalled = 1 }, null)<br />
+            <a href="~/Views/Search/Index/2">Edit Key Tag</a><br />
             @Html.ActionLink("Edit Merchandise","Index","Merchandise")<br />
             @Html.ActionLink("Edit Club Fees", "Index", "Fee")<br />
             @Html.ActionLink("Remove Administrators", "Index", "Admin")<br />
