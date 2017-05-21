@@ -10,85 +10,50 @@ using SCCheckinV3;
 
 namespace SCCheckinV3.Controllers
 {
+    [Authorize]
     public class ReportController : Controller
     {
         private SCCheckInEntities db = new SCCheckInEntities();
-        // GET: Report
-        public ActionResult Index()
+        
+        public ActionResult Birthdays()
         {
+            var birthdayList = db.OKSwingMemberLists.Where(b => b.BirthMonth == DateTime.Now.Month.ToString());
+            ViewBag.Birthdays = birthdayList;
             return View();
         }
 
-        // GET: Report/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Report/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Report/Create
+        /* This function uses a chosen month in jQuery to generate a birthday list in Json. */
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Birthdays(DateTime? startDate)
         {
-            try
+            if(startDate != null)
             {
-                // TODO: Add insert logic here
 
-                return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Report/Edit/5
-        public ActionResult Edit(int id)
-        {
             return View();
         }
 
-        // POST: Report/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult BlueDancers()
         {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Report/Delete/5
-        public ActionResult Delete(int id)
-        {
+            var blueList = db.OKSwingMemberLists.Where(bl => bl.ClassID == 6);
+            ViewBag.BlueList = blueList;
             return View();
         }
 
-        // POST: Report/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult CompleteMemberList()
         {
-            try
-            {
-                // TODO: Add delete logic here
+            var completeList = db.OKSwingMemberLists.ToList();
+            return View();
+        }
 
-                return RedirectToAction("Index");
-            }
-            catch
+        public ActionResult convertToExcel(int whichReport)
+        {
+            switch (whichReport)
             {
-                return View();
+                default:
+                    break;
             }
+            return View();
         }
     }
 }
