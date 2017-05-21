@@ -19,6 +19,7 @@ namespace SCCheckinV3.Controllers
         // 0 (Default) = Add Check In Record
         // 1 = Edit Dancer
         // 2 = Edit Key Tag
+        // 3 = Add Key Tag
         public ActionResult Index(int whoCalled = 0)
         {
             return View();
@@ -34,6 +35,10 @@ namespace SCCheckinV3.Controllers
                 case 1:
                     break;
                 case 2:
+                    break;
+                case 3:
+                    break;
+                default:
                     break;
             }
             return View();

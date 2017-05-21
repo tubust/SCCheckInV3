@@ -1,0 +1,93 @@
+﻿@model IEnumerable<SCCheckinV3.CheckIn>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MemberID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaidType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaidAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaidDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaidDesc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DanceType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReferredBy)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.MemberID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaidType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaidAmount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaidDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaidDesc)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DanceType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreateDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReferredBy)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.CheckInID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.CheckInID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.CheckInID })
+        </td>
+    </tr>
+}
+
+</table>

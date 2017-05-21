@@ -209,6 +209,8 @@
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AddCheckInController.cs" />
+    <Compile Include="Controllers\AddKeyCardController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\FeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -386,6 +388,16 @@
     <Content Include="Views\Admin\Details.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Report\MissingInAction.cshtml" />
+    <Content Include="Views\AddCheckIn\Create.cshtml" />
+    <Content Include="Views\AddCheckIn\Delete.cshtml" />
+    <Content Include="Views\AddCheckIn\Details.cshtml" />
+    <Content Include="Views\AddCheckIn\Edit.cshtml" />
+    <Content Include="Views\AddCheckIn\Index.cshtml" />
+    <Content Include="Views\AddKeyCard\Create.cshtml" />
+    <Content Include="Views\AddKeyCard\Delete.cshtml" />
+    <Content Include="Views\AddKeyCard\Details.cshtml" />
+    <Content Include="Views\AddKeyCard\Edit.cshtml" />
+    <Content Include="Views\AddKeyCard\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

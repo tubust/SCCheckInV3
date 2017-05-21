@@ -1,0 +1,106 @@
+﻿@model SCCheckinV3.CheckIn
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>CheckIn</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.MemberID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MemberID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaidType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaidType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaidAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaidAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaidDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaidDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaidDesc)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaidDesc)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DanceType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DanceType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReferredBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReferredBy)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CheckInID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
