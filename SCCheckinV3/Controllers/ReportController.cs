@@ -214,6 +214,14 @@ namespace SCCheckinV3.Controllers
          * 21 = Todays Paying Dancers
          * 22 = Todays Summary
          */
+
+        private bool isRenewingMember(int? memberID)
+        {
+            int memID = (int)memberID;
+            var yearlyCount = db.CheckIns.Count(ye => ye.DanceType == 2 && ye.MemberID == memID);
+            return (yearlyCount > 1);
+        }
+
         public ActionResult convertToExcel(int whichReport)
         {
             switch (whichReport)
