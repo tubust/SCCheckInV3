@@ -189,10 +189,68 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        /* this method takes a number code to make a report into an Excel spreadsheet.
+         * 0 = Birthdays
+         * 1 = Blue Dancers
+         * 2 = Complete List
+         * 3 = Currently Paid Members
+         * 4 = Dancers in Lessons
+         * 5 = Deleted Members
+         * 6 = Email List
+         * 7 = Expiring Members
+         * 8 = Green Dancers
+         * 9 = Modified Members
+         * 10 = Missing In Action
+         * 11 = Monthly Dancers
+         * 12 = New Dancers
+         * 13 = New Members
+         * 14 = Non Returning Members
+         * 15 = Pink Dancers
+         * 16 = Purple Dancers
+         * 17 = Renewing Members
+         * 18 = Special Events
+         * 19 = Teacher List
+         * 20 = Todays Dancers
+         * 21 = Todays Paying Dancers
+         * 22 = Todays Summary
+         */
         public ActionResult convertToExcel(int whichReport)
         {
             switch (whichReport)
             {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+                case 10:
+                    break;
+                case 11:
+                    break;
+                case 12:
+                    break;
+                case 13:
+                    break;
+                case 14:
+                    break;
+                case 15:
+                    break;
+
                 default:
                     break;
             }
