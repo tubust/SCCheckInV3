@@ -24,13 +24,20 @@ namespace SCCheckinV3.Controllers
 
         /* This function uses a chosen month in jQuery to generate a birthday list in Json. */
         [HttpPost]
-        public ActionResult Birthdays(DateTime? startDate)
+        public ActionResult Birthdays(DateTime startDate)
         {
-            if(startDate != null)
+            DateTime beginningDate;
+            if (startDate != null)
             {
-
+                beginningDate = new DateTime(startDate.Year, startDate.Month, 1);
             }
-            return View();
+            else
+            {
+                // Sets to Todays Month in case of failure.
+                beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            }
+            var birthdays = db.OKSwingMemberLists.Where(b => b.BirthMonth == beginningDate.Month.ToString());
+            return Json(new { Birthdays = birthdays });
         }
 
         public ActionResult BlueDancers()
@@ -43,6 +50,7 @@ namespace SCCheckinV3.Controllers
         public ActionResult CompleteMemberList()
         {
             var completeList = db.OKSwingMemberLists.ToList();
+            ViewBag.CompleteMemberList = completeList;
             return View();
         }
 
@@ -77,6 +85,8 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult GreenDancers()
         {
+            var greenDancers = db.OKSwingMemberLists.Where(gr => gr.ClassID == 5);
+            ViewBag.GreenDancers = greenDancers;
             return View();
         }
 
@@ -100,6 +110,12 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult NewDancers(DateTime startDate)
+        {
+            return View();
+        }
+
         public ActionResult NewMembers()
         {
             return View();
@@ -112,11 +128,15 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult PinkDancers()
         {
+            var pinkDancers = db.OKSwingMemberLists.Where(pi => pi.ClassID == 1);
+            ViewBag.PinkDancers = pinkDancers;
             return View();
         }
 
         public ActionResult PurpleDancers()
         {
+            var purpleDancers = db.OKSwingMemberLists.Where(pu => pu.ClassID == 2);
+            ViewBag.PurpleDancers = purpleDancers;
             return View();
         }
 
@@ -132,6 +152,8 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult Teachers()
         {
+            var teachers = db.OKSwingMemberLists.Where(te => te.ClassID == 7);
+            ViewBag.Teachers = teachers;
             return View();
         }
 
@@ -152,6 +174,8 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult UnknownDancers()
         {
+            var unknownDancers = db.OKSwingMemberLists.Where(un => un.ClassID == 0);
+            ViewBag.UnknownDancers = unknownDancers;
             return View();
         }
 
