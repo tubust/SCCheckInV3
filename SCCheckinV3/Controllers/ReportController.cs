@@ -14,7 +14,7 @@ namespace SCCheckinV3.Controllers
     public class ReportController : Controller
     {
         private SCCheckInEntities db = new SCCheckInEntities();
-        
+
         public ActionResult Birthdays()
         {
             var birthdayList = db.OKSwingMemberLists.Where(b => b.BirthMonth == DateTime.Now.Month.ToString());
@@ -59,7 +59,19 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult CurrentlyPaidMembers(DateTime startDate)
+        {
+            return View();
+        }
+
         public ActionResult DancersCurrentlyInLessons()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult DancersCurrentlyInLessons(DateTime startDate)
         {
             return View();
         }
@@ -83,6 +95,12 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult ExpiringMembers(DateTime startDate)
+        {
+            return View();
+        }
+
         public ActionResult GreenDancers()
         {
             var greenDancers = db.OKSwingMemberLists.Where(gr => gr.ClassID == 5);
@@ -100,7 +118,19 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult MissingInAction(DateTime startDate)
+        {
+            return View();
+        }
+
         public ActionResult MonthlyDancers()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult MonthlyDancers(DateTime startDate)
         {
             return View();
         }
@@ -121,7 +151,19 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult NewMembers(DateTime startDate)
+        {
+            return View();
+        }
+
         public ActionResult NonReturningMembers()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult NonReturningMembers(DateTime startDate)
         {
             return View();
         }
@@ -145,7 +187,19 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult RenewingMembers(DateTime startDate)
+        {
+            return View();
+        }
+
         public ActionResult SpecialEvents()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SpecialEvents(DateTime startDate)
         {
             return View();
         }
@@ -162,12 +216,30 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult TodaysDancers(DateTime startDate)
+        {
+            return View();
+        }
+
         public ActionResult TodaysPayingDancers()
         {
             return View();
         }
 
+        [HttpPost]
+        public ActionResult TodaysPayingDancers(DateTime startDate)
+        {
+            return View();
+        }
+
         public ActionResult TodaysSummary()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult TodaysSummary(DateTime startDate)
         {
             return View();
         }
@@ -181,10 +253,18 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult VoidedEntries()
         {
+            var voidEntry = db.VoidedEntries.ToList();
+            ViewBag.VoidEntry = voidEntry;
             return View();
         }
 
         public ActionResult YearlyDues()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult YearlyDues(DateTime startDate)
         {
             return View();
         }
@@ -218,7 +298,7 @@ namespace SCCheckinV3.Controllers
         private bool isRenewingMember(int? memberID)
         {
             int memID = (int)memberID;
-            var yearlyCount = db.CheckIns.Count(ye => ye.DanceType == 2 && ye.MemberID == memID);
+            int yearlyCount = db.CheckIns.Count(ye => ye.DanceType == 2 && ye.MemberID == memID);
             return (yearlyCount > 1);
         }
 
