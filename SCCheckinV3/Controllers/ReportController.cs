@@ -49,15 +49,8 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult CurrentlyPaidMembers()
         {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult CurrentlyPaidMembers(DateTime startDate)
-        {
-            DateTime beginningDate;
-            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
-                beginningDate = DateTime.Now;
+            var currentMembers = db.OKSwingMemberLists.Where(an => an.Anniversary > DateTime.Now);
+            ViewBag.CurrentlyPaidMembers = currentMembers;
             return View();
         }
 
@@ -97,15 +90,6 @@ namespace SCCheckinV3.Controllers
         {
             var expireList = db.OKSwingMemberLists.Where(ed => DateTime.Now.Subtract(ed.Anniversary.Value).Days > 30);
             ViewBag.ExpiringMembers = expireList;
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult ExpiringMembers(DateTime startDate)
-        {
-            DateTime beginningDate;
-            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
-                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -170,6 +154,8 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult MonthlyDancers()
         {
+            var monthlyDancers = db.CheckIns.Where(m => m.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && m.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            ViewBag.MonthlyDancers = monthlyDancers;
             return View();
         }
 
@@ -179,11 +165,14 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            return View();
+            var monthlyDancers = db.CheckIns.Where(m => m.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && m.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            return Json(new { MonthlyDancers = monthlyDancers } );
         }
 
         public ActionResult NewDancers()
         {
+            var newDancers = db.OKSwingMemberLists.Where(s => s.NewMemberDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && s.NewMemberDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            ViewBag.NewDancers = newDancers;
             return View();
         }
 
@@ -193,11 +182,22 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            return View();
+            var newDancers = db.OKSwingMemberLists.Where(s => s.NewMemberDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && s.NewMemberDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            return Json(new { NewDancers = newDancers });
         }
 
         public ActionResult NewMembers()
         {
+            var newMembers = db.CheckIns.Where(nm => nm.PaidType == 2 && nm.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && nm.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            List<CheckIn> newMemberList = new List<CheckIn>();
+            foreach (CheckIn mem in newMemberList)
+            {
+                if(!isRenewingMember(mem.MemberID))
+                {
+                    newMemberList.Add(mem);
+                }
+            }
+            ViewBag.NewMembers = newMemberList;
             return View();
         }
 
@@ -207,7 +207,16 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            return View();
+            var newMembers = db.CheckIns.Where(nm => nm.PaidType == 2 && nm.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && nm.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            List<CheckIn> newMemberList = new List<CheckIn>();
+            foreach (CheckIn mem in newMemberList)
+            {
+                if (!isRenewingMember(mem.MemberID))
+                {
+                    newMemberList.Add(mem);
+                }
+            }
+            return Json(new { NewMembers = newMemberList });
         }
 
         public ActionResult NonReturningMembers()
@@ -240,6 +249,16 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult RenewingMembers()
         {
+            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == 2 && nm.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && nm.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            List<CheckIn> reNewMemberList = new List<CheckIn>();
+            foreach (CheckIn mem in reNewMemberList)
+            {
+                if (isRenewingMember(mem.MemberID))
+                {
+                    reNewMemberList.Add(mem);
+                }
+            }
+            ViewBag.RenewMembers = reNewMemberList;
             return View();
         }
 
@@ -249,7 +268,16 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            return View();
+            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == 2 && nm.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && nm.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            List<CheckIn> reNewMemberList = new List<CheckIn>();
+            foreach (CheckIn mem in reNewMemberList)
+            {
+                if (isRenewingMember(mem.MemberID))
+                {
+                    reNewMemberList.Add(mem);
+                }
+            }
+            return Json(new { ReNewingMembers = reNewMemberList });
         }
 
         public ActionResult SpecialEvents()
