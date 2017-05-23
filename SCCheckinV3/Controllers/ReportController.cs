@@ -27,15 +27,8 @@ namespace SCCheckinV3.Controllers
         public ActionResult Birthdays(DateTime startDate)
         {
             DateTime beginningDate;
-            if (startDate != null)
-            {
-                beginningDate = new DateTime(startDate.Year, startDate.Month, 1);
-            }
-            else
-            {
-                // Sets to Todays Month in case of failure.
-                beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            }
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             var birthdays = db.OKSwingMemberLists.Where(b => b.BirthMonth == beginningDate.Month.ToString());
             return Json(new { Birthdays = birthdays });
         }
@@ -62,6 +55,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult CurrentlyPaidMembers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -77,14 +73,8 @@ namespace SCCheckinV3.Controllers
         public ActionResult DancersCurrentlyInLessons(DateTime startDate)
         {
             DateTime beginningDate;
-            if(startDate != null)
-            {
-                beginningDate = startDate;
-            }
-            else
-            {
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            }
             var dancersInLessons = db.CheckIns.Where(d => d.PaidType == 1 || d.PaidType == 7).Where(p => p.PaidDate.Value.Month == beginningDate.Month && p.PaidDate.Value.Year == beginningDate.Year);
             return Json(new { DancersInLessons = dancersInLessons });
         }
@@ -105,12 +95,17 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult ExpiringMembers()
         {
+            var expireList = db.OKSwingMemberLists.Where(ed => DateTime.Now.Subtract(ed.Anniversary.Value).Days > 30);
+            ViewBag.ExpiringMembers = expireList;
             return View();
         }
 
         [HttpPost]
         public ActionResult ExpiringMembers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -153,14 +148,8 @@ namespace SCCheckinV3.Controllers
         public ActionResult MissingInAction(DateTime startDate)
         {
             DateTime beginningDate;
-            if(startDate != null)
-            {
-                beginningDate = startDate;
-            }
-            else
-            {
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            }
             var memberList = db.OKSwingMemberLists.ToList();
             List<OKSwingMemberList> missingInAction = new List<OKSwingMemberList>();
             List<OKSwingMemberList> expiredAnniversary = new List<OKSwingMemberList>();
@@ -187,6 +176,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult MonthlyDancers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -198,6 +190,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult NewDancers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -209,6 +204,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult NewMembers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -220,6 +218,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult NonReturningMembers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -245,6 +246,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult RenewingMembers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -256,6 +260,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult SpecialEvents(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -274,6 +281,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult TodaysDancers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -285,6 +295,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult TodaysPayingDancers(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -296,6 +309,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult TodaysSummary(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
@@ -324,6 +340,9 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult YearlyDues(DateTime startDate)
         {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
             return View();
         }
 
