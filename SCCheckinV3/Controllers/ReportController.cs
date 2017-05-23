@@ -67,13 +67,26 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult DancersCurrentlyInLessons()
         {
+            var dancerInLessons = db.CheckIns.Where(d => d.PaidType == 1 || d.PaidType == 7).Where(p => p.PaidDate.Value.Month == DateTime.Now.Month && p.PaidDate.Value.Year == DateTime.Now.Year)
+                .OrderBy(l => l.LastName);
+            ViewBag.DancersInLessons = dancerInLessons;
             return View();
         }
 
         [HttpPost]
         public ActionResult DancersCurrentlyInLessons(DateTime startDate)
         {
-            return View();
+            DateTime beginningDate;
+            if(startDate != null)
+            {
+                beginningDate = startDate;
+            }
+            else
+            {
+                beginningDate = DateTime.Now;
+            }
+            var dancersInLessons = db.CheckIns.Where(d => d.PaidType == 1 || d.PaidType == 7).Where(p => p.PaidDate.Value.Month == beginningDate.Month && p.PaidDate.Value.Year == beginningDate.Year);
+            return Json(new { DancersInLessons = dancersInLessons });
         }
 
         public ActionResult DeletedMembers()
@@ -113,8 +126,26 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        /* Missing in Action means a dancer whos last recorded check in is over 60 days ago.*/
         public ActionResult MissingInAction()
         {
+            var memberList = db.OKSwingMemberLists.ToList();
+            List<OKSwingMemberList> missingInAction = new List<OKSwingMemberList>();
+            List<OKSwingMemberList> expiredAnniversary = new List<OKSwingMemberList>();
+            DateTime sixtyDays = DateTime.Now.AddDays(-60);
+            foreach(OKSwingMemberList mem in memberList)
+            {
+                if(mem.Anniversary < DateTime.Now)
+                {
+                    expiredAnniversary.Add(mem);
+                }
+                if(sixtyDays > lastCheckIn(mem.MemberID))
+                {
+                    missingInAction.Add(mem);
+                }
+            }
+            ViewBag.ExpiringAnniversary = expiredAnniversary;
+            ViewBag.MissingInAction = missingInAction;
             return View();
         }
 
@@ -300,6 +331,16 @@ namespace SCCheckinV3.Controllers
             int memID = (int)memberID;
             int yearlyCount = db.CheckIns.Count(ye => ye.DanceType == 2 && ye.MemberID == memID);
             return (yearlyCount > 1);
+        }
+
+        private DateTime lastCheckIn(int memberID)
+        {
+            var checkInDates = db.CheckIns.Where(ch => ch.MemberID == memberID).OrderByDescending(c => c.CreateDate);
+            foreach(CheckIn chk in checkInDates)
+            {
+                return chk.CreateDate;
+            }
+            return DateTime.Now;
         }
 
         public ActionResult convertToExcel(int whichReport)
