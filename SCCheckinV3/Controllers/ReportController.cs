@@ -102,7 +102,19 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult MembersModifiedInDatabase()
         {
+            var membersModified = db.OKSwingMemberLists.Where(mm => mm.DateLastUpdated >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && mm.DateLastUpdated <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            ViewBag.MembersModifiedInDatabase = membersModified;
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult MembersModifiedInDatabase(DateTime startDate)
+        {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
+            var membersModified = db.OKSwingMemberLists.Where(mm => mm.DateLastUpdated >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && mm.DateLastUpdated <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            return Json(new { MembersModifiedInDatabase = membersModified });
         }
 
         /* Missing in Action means a dancer whos last recorded check in is over 60 days ago.*/
@@ -282,6 +294,8 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult SpecialEvents()
         {
+            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == 5 || sp.PaidDesc.Contains("Special") && sp.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && sp.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1)));
+            ViewBag.SpecialEvents = specialEvents;
             return View();
         }
 
@@ -291,7 +305,8 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            return View();
+            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == 5 || sp.PaidDesc.Contains("Special")) && sp.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && sp.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            return Json(new { SpecialEvents = specialEvents });
         }
 
         public ActionResult Teachers()
