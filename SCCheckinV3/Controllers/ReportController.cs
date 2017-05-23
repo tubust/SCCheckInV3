@@ -152,7 +152,31 @@ namespace SCCheckinV3.Controllers
         [HttpPost]
         public ActionResult MissingInAction(DateTime startDate)
         {
-            return View();
+            DateTime beginningDate;
+            if(startDate != null)
+            {
+                beginningDate = startDate;
+            }
+            else
+            {
+                beginningDate = DateTime.Now;
+            }
+            var memberList = db.OKSwingMemberLists.ToList();
+            List<OKSwingMemberList> missingInAction = new List<OKSwingMemberList>();
+            List<OKSwingMemberList> expiredAnniversary = new List<OKSwingMemberList>();
+            DateTime sixtyDays = beginningDate.AddDays(-60);
+            foreach (OKSwingMemberList mem in memberList)
+            {
+                if (mem.Anniversary < DateTime.Now)
+                {
+                    expiredAnniversary.Add(mem);
+                }
+                if (sixtyDays > lastCheckIn(mem.MemberID))
+                {
+                    missingInAction.Add(mem);
+                }
+            }
+            return Json(new { ExpiredAnniversary = expiredAnniversary, MissingInAction = missingInAction } );
         }
 
         public ActionResult MonthlyDancers()
@@ -291,6 +315,9 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult YearlyDues()
         {
+            var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == 2 && p.PaidDate.Value >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
+            && p.PaidDate.Value <= new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1).AddSeconds(-1));
+            ViewBag.YearlyDues = yearlyDuesList;
             return View();
         }
 
