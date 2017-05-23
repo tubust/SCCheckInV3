@@ -35,7 +35,7 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult BlueDancers()
         {
-            var blueList = db.OKSwingMemberLists.Where(bl => bl.ClassID == 6);
+            var blueList = db.OKSwingMemberLists.Where(bl => bl.ClassID == (int)ColorLevel.Blue);
             ViewBag.BlueList = blueList;
             return View();
         }
@@ -56,7 +56,7 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult DancersCurrentlyInLessons()
         {
-            var dancerInLessons = db.CheckIns.Where(d => d.PaidType == 1 || d.PaidType == 7).Where(p => p.PaidDate.Value.Month == DateTime.Now.Month && p.PaidDate.Value.Year == DateTime.Now.Year)
+            var dancerInLessons = db.CheckIns.Where(d => d.PaidType == (int)PaidType.MonthlyDues || d.PaidType == (int)PaidType.Exempt).Where(p => p.PaidDate.Value.Month == DateTime.Now.Month && p.PaidDate.Value.Year == DateTime.Now.Year)
                 .OrderBy(l => l.LastName);
             ViewBag.DancersInLessons = dancerInLessons;
             return View();
@@ -68,7 +68,7 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var dancersInLessons = db.CheckIns.Where(d => d.PaidType == 1 || d.PaidType == 7).Where(p => p.PaidDate.Value.Month == beginningDate.Month && p.PaidDate.Value.Year == beginningDate.Year);
+            var dancersInLessons = db.CheckIns.Where(d => d.PaidType == (int)PaidType.MonthlyDues || d.PaidType == (int)PaidType.Exempt).Where(p => p.PaidDate.Value.Month == beginningDate.Month && p.PaidDate.Value.Year == beginningDate.Year);
             return Json(new { DancersInLessons = dancersInLessons });
         }
 
@@ -95,7 +95,7 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult GreenDancers()
         {
-            var greenDancers = db.OKSwingMemberLists.Where(gr => gr.ClassID == 5);
+            var greenDancers = db.OKSwingMemberLists.Where(gr => gr.ClassID == (int)ColorLevel.Green);
             ViewBag.GreenDancers = greenDancers;
             return View();
         }
@@ -200,7 +200,7 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult NewMembers()
         {
-            var newMembers = db.CheckIns.Where(nm => nm.PaidType == 2 && nm.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && nm.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            var newMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && nm.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
             List<CheckIn> newMemberList = new List<CheckIn>();
             foreach (CheckIn mem in newMemberList)
             {
@@ -219,7 +219,7 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var newMembers = db.CheckIns.Where(nm => nm.PaidType == 2 && nm.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && nm.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            var newMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && nm.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
             List<CheckIn> newMemberList = new List<CheckIn>();
             foreach (CheckIn mem in newMemberList)
             {
@@ -247,21 +247,21 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult PinkDancers()
         {
-            var pinkDancers = db.OKSwingMemberLists.Where(pi => pi.ClassID == 1);
+            var pinkDancers = db.OKSwingMemberLists.Where(pi => pi.ClassID == (int)ColorLevel.Pink);
             ViewBag.PinkDancers = pinkDancers;
             return View();
         }
 
         public ActionResult PurpleDancers()
         {
-            var purpleDancers = db.OKSwingMemberLists.Where(pu => pu.ClassID == 2);
+            var purpleDancers = db.OKSwingMemberLists.Where(pu => pu.ClassID == (int)ColorLevel.Purple);
             ViewBag.PurpleDancers = purpleDancers;
             return View();
         }
 
         public ActionResult RenewingMembers()
         {
-            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == 2 && nm.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && nm.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && nm.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
             List<CheckIn> reNewMemberList = new List<CheckIn>();
             foreach (CheckIn mem in reNewMemberList)
             {
@@ -280,7 +280,7 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == 2 && nm.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && nm.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && nm.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
             List<CheckIn> reNewMemberList = new List<CheckIn>();
             foreach (CheckIn mem in reNewMemberList)
             {
@@ -294,7 +294,7 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult SpecialEvents()
         {
-            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == 5 || sp.PaidDesc.Contains("Special") && sp.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && sp.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1)));
+            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == (int)PaidType.SpecialEvent || sp.PaidDesc.Contains("Special") && sp.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && sp.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1)));
             ViewBag.SpecialEvents = specialEvents;
             return View();
         }
@@ -305,13 +305,13 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == 5 || sp.PaidDesc.Contains("Special")) && sp.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && sp.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == (int)PaidType.SpecialEvent || sp.PaidDesc.Contains("Special")) && sp.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && sp.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
             return Json(new { SpecialEvents = specialEvents });
         }
 
         public ActionResult Teachers()
         {
-            var teachers = db.OKSwingMemberLists.Where(te => te.ClassID == 7);
+            var teachers = db.OKSwingMemberLists.Where(te => te.ClassID == (int)ColorLevel.Teacher);
             ViewBag.Teachers = teachers;
             return View();
         }
@@ -360,7 +360,7 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult UnknownDancers()
         {
-            var unknownDancers = db.OKSwingMemberLists.Where(un => un.ClassID == 0);
+            var unknownDancers = db.OKSwingMemberLists.Where(un => un.ClassID == (int)ColorLevel.Unknown);
             ViewBag.UnknownDancers = unknownDancers;
             return View();
         }
@@ -374,7 +374,7 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult YearlyDues()
         {
-            var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == 2 && p.PaidDate.Value >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
+            var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == (int)PaidType.YearlyDues && p.PaidDate.Value >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
             && p.PaidDate.Value <= new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1).AddSeconds(-1));
             ViewBag.YearlyDues = yearlyDuesList;
             return View();
@@ -386,7 +386,9 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            return View();
+            var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == (int)PaidType.YearlyDues && p.PaidDate.Value >= new DateTime(beginningDate.Year, beginningDate.Month, 1)
+            && p.PaidDate.Value <= new DateTime(beginningDate.Year, beginningDate.Month + 1, 1).AddSeconds(-1));
+            return Json(new { YearlyDues = yearlyDuesList });
         }
 
         /* this method takes a number code to make a report into an Excel spreadsheet.
