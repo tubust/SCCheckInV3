@@ -10,14 +10,13 @@ using SCCheckinV3;
 
 namespace SCCheckinV3.Controllers
 {
-    [Authorize]
     public class ReportController : Controller
     {
         private SCCheckInEntities db = new SCCheckInEntities();
 
         public ActionResult Birthdays()
         {
-            var birthdayList = db.OKSwingMemberLists.Where(b => b.BirthMonth == DateTime.Now.Month.ToString());
+            var birthdayList = db.OKSwingMemberLists.Where(b => (b.BirthMonth == DateTime.Now.Month.ToString() || b.DOB.Value.Month == DateTime.Now.Month) && b.Anniversary > DateTime.Now).OrderBy(o => o.LastName);
             ViewBag.Birthdays = birthdayList;
             return View();
         }
@@ -29,7 +28,7 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var birthdays = db.OKSwingMemberLists.Where(b => b.BirthMonth == beginningDate.Month.ToString());
+            var birthdays = db.OKSwingMemberLists.Where(b => (b.BirthMonth == beginningDate.Month.ToString() || b.DOB.Value.Month == beginningDate.Month) && b.Anniversary > DateTime.Now).OrderBy(o => o.LastName);
             return Json(new { Birthdays = birthdays });
         }
 

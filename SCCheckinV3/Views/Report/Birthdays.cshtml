@@ -3,5 +3,64 @@
     ViewBag.Title = "Birthdays";
 }
 
-<h2>Birthdays</h2>
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/Birthdays",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.Birthdays;
+                    $(".firstTable").empty();
+                    $(".firstTable").append("<tr><th>Name</th><th>BirthDay</th><th>Address</th><th>City</th><th>State</th><th>Zip</th></tr>");
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        var dateString = theData[i].DOB.substr(6);
+                        var currentTime = new Date(parseInt(dateString));
+                        var month = currentTime.getMonth() + 1;
+                        var day = currentTime.getDate();
+                        var date = month + "/" + day
+                        if (theData[i].BirthMonth === null || theData[i].BirthDay === null) {
+                            $(".firstTable").append("<tr><td>" + theData[i].LastName + ", " + theData[i].FirstName + "</td><td>" + date + "</td><td>" + theData[i].Address + "</td><td>" + theData[i].City + "</td><td>" + theData[i].State + "</td><td>" + theData[i].Zip + "</td></tr>");
+                        }
+                        else {
+                            $(".firstTable").append("<tr><td>" + theData[i].LastName + ", " + theData[i].FirstName + "</td><td>" + theData[i].BirthMonth + "/" + theData[i].BirthDay + "</td><td>" + theData[i].Address + "</td><td>" + theData[i].City + "</td><td>" + theData[i].State + "</td><td>" + theData[i].Zip + "</td></tr>");
+                        }
+                    }
+                },
+                error: function (ex) {
+                    alert("Something Went Wrong.");
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $(".loadingImage").show(); })
+        $(document).ajaxStop(function () { $(".loadingImage").hide(); })
+    });
+</script>
 
+<h2>Birthdays</h2>
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table border="1" width="100%" class="firstTable">
+    <tr><th>Name</th><th>Birthday</th><th>Address</th><th>City</th><th>State</th><th>Zip</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.Birthdays)
+    {
+        if (mem.DOB == null)
+        {
+            <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.BirthMonth/@mem.BirthDay</td><td>@mem.Address</td><td>@mem.City</td><td>@mem.State</td><td>@mem.Zip</td></tr>
+        }
+        else
+        {
+            <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.DOB.Value.Month/@mem.DOB.Value.Day</td><td>@mem.Address</td><td>@mem.City</td><td>@mem.State</td><td>@mem.Zip</td></tr>
+        }
+    }
+</table>
