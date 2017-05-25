@@ -43,14 +43,14 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult CompleteMemberList()
         {
-            var completeList = db.OKSwingMemberLists.ToList();
+            var completeList = db.OKSwingMemberLists.ToList().OrderBy(o => o.LastName);
             ViewBag.CompleteMemberList = completeList;
             return View();
         }
 
         public ActionResult CurrentlyPaidMembers()
         {
-            var currentMembers = db.OKSwingMemberLists.Where(an => an.Anniversary > DateTime.Now);
+            var currentMembers = db.OKSwingMemberLists.Where(an => an.Anniversary > DateTime.Now).OrderBy(o => o.LastName);
             ViewBag.CurrentlyPaidMembers = currentMembers;
             return View();
         }

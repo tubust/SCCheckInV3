@@ -4,4 +4,13 @@
 }
 
 <h2>CurrentlyPaidMembers</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+
+<table width="100%" border="1">
+    <tr><th>Name</th><th>Address</th><th>Home Phone</th><th>Anniversary</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.CurrentlyPaidMembers)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.Address, @mem.City,@mem.State, @mem.Zip</td><td>@mem.HomePhone</td><td>@mem.Anniversary.Value.ToShortDateString()</td></tr>
+    }
+</table>
 
