@@ -4,4 +4,13 @@
 }
 
 <h2>EmailList</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+
+<table width="100%" border="1">
+    <tr><th>Name</th><th>Email</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.EmailList)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.EmailAddress</td></tr>
+    }
+</table>
 

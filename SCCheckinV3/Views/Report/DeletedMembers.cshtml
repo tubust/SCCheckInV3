@@ -1,7 +1,19 @@
 ﻿
 @{
     ViewBag.Title = "DeletedMembers";
+    int counter = 0;
 }
 
 <h2>DeletedMembers</h2>
+@Html.ActionLink("Return To Home", "Index","Home")
+
+<table width="100%" border="1">
+    <tr><th>Name</th><th>Address</th><th>Home Phone</th><th>Email</th><th>Join Date</th><th>Authorized By</th></tr>
+    @foreach(DeletedMember mem in ViewBag.DeletedMembers)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.Address,@mem.City,@mem.State,@mem.Zip</td><td>@mem.HomePhone</td><td>@mem.EmailAddress</td><td>@mem.DateJoined</td><td>@mem.AuthorizedBy</td></tr>
+        counter++;
+    }
+    <tr><td>Total Number Of Dancers: @counter</td></tr>
+</table>
 

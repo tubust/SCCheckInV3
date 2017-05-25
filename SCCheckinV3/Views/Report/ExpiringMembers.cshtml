@@ -1,7 +1,19 @@
 ﻿
 @{
     ViewBag.Title = "ExpiringMembers";
+    int counter = 0;
 }
 
 <h2>ExpiringMembers</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+
+<table width="100%" border="1">
+    <tr><th>Name</th><th>Anniversary</th><th>Home Phone</th><th>Address</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.ExpiringMembers)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.Anniversary.Value.ToShortDateString()</td><td>@mem.HomePhone</td><td>@mem.Address,@mem.City,@mem.State,@mem.Zip</td></tr>
+        counter++;
+    }
+    <tr><td>Total Number Of Dancers: @counter</td></tr>
+</table>
 

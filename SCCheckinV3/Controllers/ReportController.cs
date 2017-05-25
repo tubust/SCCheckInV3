@@ -59,7 +59,7 @@ namespace SCCheckinV3.Controllers
         {
             var dancerInLessons = db.CheckIns.Where(d => d.PaidType == (int)PaidType.MonthlyDues || d.PaidType == (int)PaidType.Exempt).Where(p => p.PaidDate.Value.Month == DateTime.Now.Month && p.PaidDate.Value.Year == DateTime.Now.Year)
                 .OrderBy(l => l.LastName);
-            ViewBag.DancersInLessons = dancerInLessons;
+            ViewBag.DancersCurrentlyInLessons = dancerInLessons;
             return View();
         }
 
@@ -69,27 +69,29 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var dancersInLessons = db.CheckIns.Where(d => d.PaidType == (int)PaidType.MonthlyDues || d.PaidType == (int)PaidType.Exempt).Where(p => p.PaidDate.Value.Month == beginningDate.Month && p.PaidDate.Value.Year == beginningDate.Year);
-            return Json(new { DancersInLessons = dancersInLessons });
+            var dancersInLessons = db.CheckIns.Where(d => d.PaidType == (int)PaidType.MonthlyDues || d.PaidType == (int)PaidType.Exempt).Where(p => p.PaidDate.Value.Month == beginningDate.Month && p.PaidDate.Value.Year == beginningDate.Year)
+                .OrderBy(o => o.LastName);
+            return Json(new { DancersCurrentlyInLessons = dancersInLessons });
         }
 
         public ActionResult DeletedMembers()
         {
             var deletedMemberList = db.DeletedMembers.ToList();
-            ViewBag.DeletedMemberList = deletedMemberList;
+            ViewBag.DeletedMembers = deletedMemberList;
             return View();
         }
 
         public ActionResult EmailList()
         {
-            var theEmailList = db.OKSwingMemberLists.Where(em => em.EmailAddress != null && em.EmailAddress != string.Empty);
+            var theEmailList = db.OKSwingMemberLists.Where(em => em.EmailAddress != null && em.EmailAddress != string.Empty).OrderBy(o => o.LastName);
             ViewBag.EmailList = theEmailList;
             return View();
         }
 
         public ActionResult ExpiringMembers()
         {
-            var expireList = db.OKSwingMemberLists.Where(ed => DateTime.Now.Subtract(ed.Anniversary.Value).Days > 30);
+            DateTime chkAnniversary = DateTime.Now.AddDays(-31);
+            var expireList = db.OKSwingMemberLists.Where(ed => ed.Anniversary >= chkAnniversary && ed.Anniversary <= DateTime.Now).OrderBy(o => o.LastName);
             ViewBag.ExpiringMembers = expireList;
             return View();
         }

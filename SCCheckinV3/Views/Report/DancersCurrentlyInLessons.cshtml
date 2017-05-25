@@ -1,7 +1,58 @@
 ﻿
 @{
     ViewBag.Title = "DancersCurrentlyInLessons";
+    int counter = 0;
 }
 
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/DancersCurrentlyInLessons",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.DancersCurrentlyInLessons;
+                    $(".firstTable").empty();
+                    $(".firstTable").append("<tr><th>Name</th></tr>");
+                    var counter = 0;
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        $(".firstTable").append("<tr><td>" + theData[i].LastName + ", " + theData[i].FirstName + "</td></tr>");
+                        counter++;
+                    }
+                    $(".firstTable").append("<tr><td>Total Number Of Dancers In Lessons: " + counter + "</td></tr>");
+                },
+                error: function (ex) {
+                    alert("Something Went Wrong.");
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $(".loadingImage").show(); })
+        $(document).ajaxStop(function () { $(".loadingImage").hide(); })
+    });
+</script>
+
 <h2>DancersCurrentlyInLessons</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table width="100%" border="1" class="firstTable">
+    <tr><th>Name</th></tr>
+    @foreach(CheckIn mem in ViewBag.DancersCurrentlyInLessons)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td></tr>
+        counter++;
+    }
+    <tr><td>Total Number Of Dancers In Lessons: @counter</td></tr>
+</table>
 
