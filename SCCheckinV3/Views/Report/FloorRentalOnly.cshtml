@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "FloorRentalOnly";
+}
+
+<h2>FloorRentalOnly</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+
+<table width="100%" border="1">
+    <tr><th>Name</th><th>Level</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.FloorRentalOnly)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>FLOOR RENTAL ONLY</td></tr>
+    }
+</table>
+

@@ -4,4 +4,13 @@
 }
 
 <h2>BlueDancers</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+
+<table width="100%" border="1">
+    <tr><th>Name</th><th>Level</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.BlueDancers)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>BLUE</td></tr>
+    }
+</table>
 

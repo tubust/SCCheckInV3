@@ -27,15 +27,17 @@ namespace SCCheckinV3.Controllers
         {
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+            {
                 beginningDate = DateTime.Now;
+            }
             var birthdays = db.OKSwingMemberLists.Where(b => (b.BirthMonth == beginningDate.Month.ToString() || b.DOB.Value.Month == beginningDate.Month) && b.Anniversary > DateTime.Now).OrderBy(o => o.LastName);
             return Json(new { Birthdays = birthdays });
         }
 
         public ActionResult BlueDancers()
         {
-            var blueList = db.OKSwingMemberLists.Where(bl => bl.ClassID == (int)ColorLevel.Blue);
-            ViewBag.BlueList = blueList;
+            var blueList = db.OKSwingMemberLists.Where(bl => bl.ClassID == (int)ColorLevel.Blue).OrderBy(o => o.LastName);
+            ViewBag.BlueDancers = blueList;
             return View();
         }
 
@@ -92,9 +94,16 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        public ActionResult FloorRentalOnly()
+        {
+            var floorView = db.OKSwingMemberLists.Where(f => f.ClassID == (int)ColorLevel.FloorRentalOnly).OrderBy(of => of.LastName);
+            ViewBag.FloorRentalOnly = floorView;
+            return View();
+        }
+
         public ActionResult GreenDancers()
         {
-            var greenDancers = db.OKSwingMemberLists.Where(gr => gr.ClassID == (int)ColorLevel.Green);
+            var greenDancers = db.OKSwingMemberLists.Where(gr => gr.ClassID == (int)ColorLevel.Green).OrderBy(o => o.LastName);
             ViewBag.GreenDancers = greenDancers;
             return View();
         }
@@ -203,7 +212,7 @@ namespace SCCheckinV3.Controllers
             List<CheckIn> newMemberList = new List<CheckIn>();
             foreach (CheckIn mem in newMemberList)
             {
-                if(!isRenewingMember(mem.MemberID))
+                if(!isRenewingMember((int)mem.MemberID))
                 {
                     newMemberList.Add(mem);
                 }
@@ -222,7 +231,7 @@ namespace SCCheckinV3.Controllers
             List<CheckIn> newMemberList = new List<CheckIn>();
             foreach (CheckIn mem in newMemberList)
             {
-                if (!isRenewingMember(mem.MemberID))
+                if (!isRenewingMember((int)mem.MemberID))
                 {
                     newMemberList.Add(mem);
                 }
@@ -247,14 +256,14 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult PinkDancers()
         {
-            var pinkDancers = db.OKSwingMemberLists.Where(pi => pi.ClassID == (int)ColorLevel.Pink);
+            var pinkDancers = db.OKSwingMemberLists.Where(pi => pi.ClassID == (int)ColorLevel.Pink).OrderBy(o => o.LastName);
             ViewBag.PinkDancers = pinkDancers;
             return View();
         }
 
         public ActionResult PurpleDancers()
         {
-            var purpleDancers = db.OKSwingMemberLists.Where(pu => pu.ClassID == (int)ColorLevel.Purple);
+            var purpleDancers = db.OKSwingMemberLists.Where(pu => pu.ClassID == (int)ColorLevel.Purple).OrderBy(o => o.LastName);
             ViewBag.PurpleDancers = purpleDancers;
             return View();
         }
@@ -265,7 +274,7 @@ namespace SCCheckinV3.Controllers
             List<CheckIn> reNewMemberList = new List<CheckIn>();
             foreach (CheckIn mem in reNewMemberList)
             {
-                if (isRenewingMember(mem.MemberID))
+                if (isRenewingMember((int)mem.MemberID))
                 {
                     reNewMemberList.Add(mem);
                 }
@@ -284,7 +293,7 @@ namespace SCCheckinV3.Controllers
             List<CheckIn> reNewMemberList = new List<CheckIn>();
             foreach (CheckIn mem in reNewMemberList)
             {
-                if (isRenewingMember(mem.MemberID))
+                if (isRenewingMember((int)mem.MemberID))
                 {
                     reNewMemberList.Add(mem);
                 }
@@ -418,6 +427,30 @@ namespace SCCheckinV3.Controllers
             return Json(new { YearlyDues = yearlyDuesList });
         }
 
+        public ActionResult YellowDancers()
+        {
+            var yellowList = db.OKSwingMemberLists.Where(y => y.ClassID == (int)ColorLevel.Yellow).OrderBy(o => o.LastName);
+            ViewBag.YellowDancers = yellowList;
+            return View();
+        }
+
+        private bool isRenewingMember(int memberID)
+        {
+            int memID = (int)memberID;
+            int yearlyCount = db.CheckIns.Count(ye => ye.DanceType == 2 && ye.MemberID == memID);
+            return (yearlyCount > 1);
+        }
+
+        private DateTime lastCheckIn(int memberID)
+        {
+            var checkInDates = db.CheckIns.Where(ch => ch.MemberID == memberID).OrderByDescending(c => c.CreateDate);
+            foreach(CheckIn chk in checkInDates)
+            {
+                return chk.CreateDate;
+            }
+            return DateTime.Now;
+        }
+
         /* this method takes a number code to make a report into an Excel spreadsheet.
          * 0 = Birthdays
          * 1 = Blue Dancers
@@ -442,25 +475,12 @@ namespace SCCheckinV3.Controllers
          * 20 = Todays Dancers
          * 21 = Todays Paying Dancers
          * 22 = Todays Summary
+         * 23 = Unknown Dancers
+         * 24 = Voided Entries
+         * 25 = Yearly Dues
+         * 26 = Year Over Year Sales
+         * 27 = Yellow Dancers
          */
-
-        private bool isRenewingMember(int? memberID)
-        {
-            int memID = (int)memberID;
-            int yearlyCount = db.CheckIns.Count(ye => ye.DanceType == 2 && ye.MemberID == memID);
-            return (yearlyCount > 1);
-        }
-
-        private DateTime lastCheckIn(int memberID)
-        {
-            var checkInDates = db.CheckIns.Where(ch => ch.MemberID == memberID).OrderByDescending(c => c.CreateDate);
-            foreach(CheckIn chk in checkInDates)
-            {
-                return chk.CreateDate;
-            }
-            return DateTime.Now;
-        }
-
         public ActionResult convertToExcel(int whichReport)
         {
             switch (whichReport)
@@ -510,6 +530,16 @@ namespace SCCheckinV3.Controllers
                 case 21:
                     break;
                 case 22:
+                    break;
+                case 23:
+                    break;
+                case 24:
+                    break;
+                case 25:
+                    break;
+                case 26:
+                    break;
+                case 27:
                     break;
                 default:
                     break;
