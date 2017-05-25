@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "YellowDancers";
+    int counter = 0;
 }
 
 <h2>YellowDancers</h2>
@@ -12,5 +13,6 @@
     {
         <tr><td>@mem.LastName, @mem.FirstName</td><td>YELLOW</td></tr>
     }
+    <tr><td>Total Number Of Dancers:</td><td>@counter</td></tr>
 </table>
 

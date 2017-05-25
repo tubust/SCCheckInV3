@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "FloorRentalOnly";
+    int counter = 0;
 }
 
 <h2>FloorRentalOnly</h2>
@@ -11,6 +12,8 @@
     @foreach(OKSwingMemberList mem in ViewBag.FloorRentalOnly)
     {
         <tr><td>@mem.LastName, @mem.FirstName</td><td>FLOOR RENTAL ONLY</td></tr>
+        counter++;
     }
+    <tr><td>Total Number Of Dancers:</td><td>@counter</td></tr>
 </table>
 

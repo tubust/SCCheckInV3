@@ -143,7 +143,7 @@ namespace SCCheckinV3.Controllers
                     missingInAction.Add(mem);
                 }
             }
-            ViewBag.ExpiringAnniversary = expiredAnniversary;
+            ViewBag.ExpiredAnniversary = expiredAnniversary;
             ViewBag.MissingInAction = missingInAction;
             return View();
         }
