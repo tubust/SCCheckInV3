@@ -3,5 +3,50 @@
     ViewBag.Title = "MembersModifiedInDatabase";
 }
 
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/MembersModifiedInDatabase",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.MembersModifiedInDatabase;
+                    $(".firstTable").empty();
+                    $(".firstTable").append("<tr><th>Member Modified</th><th>Member Modified By</th></tr>");
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        $(".firstTable").append("<tr><td>" + theData[i].LastName + ", " + theData[i].FirstName + "</td><td>" + theData[i].LastUpdatedBy + "</td></tr>");
+                    }
+                },
+                error: function (ex) {
+                    alert("Something Went Wrong.");
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
+
 <h2>MembersModifiedInDatabase</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table width="100%" border="1" class="firstTable">
+    <tr><th>Member Modified</th><th>Member Modified By</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.MembersModifiedInDatabase)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.LastUpdatedBy</td></tr>
+    }
+</table>
 

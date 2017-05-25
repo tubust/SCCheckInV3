@@ -2,6 +2,67 @@
 @{
     ViewBag.Title = "MissingInAction";
 }
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/MissingInAction",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.MissingInAction;
+                    var theData2 = data.ExpiredAnniversary;
+                    $(".firstTable").empty();
+                    $(".firstTable").append("<tr><th>Member Modified</th><th>Member Modified By</th></tr>");
+                    for (var i = 0; i < theData2.length; i++)
+                    {
+                        
+                    }
+                    $(".secondTable").append();
+                    for (var j = 0; j < theData.length; j++)
+                    {
+
+                    }
+                },
+                error: function (ex) {
+                    alert("Something Went Wrong.");
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
 
 <h2>MissingInAction</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table width="100%" border="1" class="firstTable">
+    <tr><th>Expired Anniversary</th></tr>
+    <tr><th>Name</th><th>Expired On</th><th>Email</th><th>Address</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.ExpiredAnniversary)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.Anniversary.Value.ToShortDateString()</td><td>@mem.EmailAddress</td><td>@mem.Address,@mem.City,@mem.State,@mem.Zip</td></tr>
+    }
+</table>
+<br />
+<br />
+<table width="100%" border="1" class="secondTable">
+    <tr><th>Missing In Action</th></tr>
+    <tr><th>Name</th><th>Last Recorded Activity Date</th><th>Email</th><th>Address</th></tr>
+    @foreach (OKSwingMemberList mem in ViewBag.MissingInAction)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.Dateadded</td><td>@mem.EmailAddress</td><td>@mem.Address,@mem.City,@mem.State,@mem.Zip</td></tr>
+    }
+</table>
 

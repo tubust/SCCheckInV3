@@ -112,7 +112,9 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult MembersModifiedInDatabase()
         {
-            var membersModified = db.OKSwingMemberLists.Where(mm => mm.DateLastUpdated >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && mm.DateLastUpdated <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            DateTime beginTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1);
+            var membersModified = db.OKSwingMemberLists.Where(mm => mm.DateLastUpdated >= beginTime && mm.DateLastUpdated <= endTime);
             ViewBag.MembersModifiedInDatabase = membersModified;
             return View();
         }
@@ -121,9 +123,13 @@ namespace SCCheckinV3.Controllers
         public ActionResult MembersModifiedInDatabase(DateTime startDate)
         {
             DateTime beginningDate;
-            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
-                beginningDate = DateTime.Now;
-            var membersModified = db.OKSwingMemberLists.Where(mm => mm.DateLastUpdated >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && mm.DateLastUpdated <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            DateTime endDate;
+            if (DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = new DateTime(beginningDate.Year,beginningDate.Month,1);
+            else
+                beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            endDate = new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1);
+            var membersModified = db.OKSwingMemberLists.Where(mm => mm.DateLastUpdated >= beginningDate && mm.DateLastUpdated <= endDate);
             return Json(new { MembersModifiedInDatabase = membersModified });
         }
 
@@ -133,6 +139,7 @@ namespace SCCheckinV3.Controllers
             var memberList = db.OKSwingMemberLists.ToList();
             List<OKSwingMemberList> missingInAction = new List<OKSwingMemberList>();
             List<OKSwingMemberList> expiredAnniversary = new List<OKSwingMemberList>();
+            List<DateTime> lastCheckInList = new List<DateTime>();
             DateTime sixtyDays = DateTime.Now.AddDays(-60);
             foreach(OKSwingMemberList mem in memberList)
             {
@@ -140,13 +147,15 @@ namespace SCCheckinV3.Controllers
                 {
                     expiredAnniversary.Add(mem);
                 }
-                if(sixtyDays > lastCheckIn(mem.MemberID))
+                DateTime lastCheck = lastCheckIn(mem.MemberID);
+                if (sixtyDays > lastCheck)
                 {
+                    mem.Dateadded = lastCheck.ToShortDateString();
                     missingInAction.Add(mem);
                 }
             }
-            ViewBag.ExpiredAnniversary = expiredAnniversary;
-            ViewBag.MissingInAction = missingInAction;
+            ViewBag.ExpiredAnniversary = expiredAnniversary.OrderBy(o => o.LastName);
+            ViewBag.MissingInAction = missingInAction.OrderBy(o => o.LastName);
             return View();
         }
 
@@ -171,7 +180,7 @@ namespace SCCheckinV3.Controllers
                     missingInAction.Add(mem);
                 }
             }
-            return Json(new { ExpiredAnniversary = expiredAnniversary, MissingInAction = missingInAction } );
+            return Json(new { ExpiredAnniversary = expiredAnniversary.OrderBy(o => o.LastName), MissingInAction = missingInAction.OrderBy(o => o.LastName) } );
         }
 
         public ActionResult MonthlyDancers()
@@ -443,7 +452,7 @@ namespace SCCheckinV3.Controllers
             return (yearlyCount > 1);
         }
 
-        private DateTime lastCheckIn(int memberID)
+        public DateTime lastCheckIn(int memberID)
         {
             var checkInDates = db.CheckIns.Where(ch => ch.MemberID == memberID).OrderByDescending(c => c.CreateDate);
             foreach(CheckIn chk in checkInDates)
