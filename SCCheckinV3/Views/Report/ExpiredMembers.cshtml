@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "ExpiredMembers";
+}
+
+<h2>ExpiredMembers</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+
+<table width="100%" border="1">
+    <tr><th>Name</th><th>Expired On</th><th>Email To Contact</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.ExpiredMembers)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.Anniversary.Value.ToShortDateString()</td><td>@mem.EmailAddress</td></tr>
+    }
+</table>
+

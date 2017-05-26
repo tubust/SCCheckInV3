@@ -96,6 +96,13 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        public ActionResult ExpiredMembers()
+        {
+            var expiredMembers = db.OKSwingMemberLists.Where(an => an.Anniversary <= DateTime.Now && an.EmailAddress != null && an.EmailAddress != string.Empty).OrderByDescending(a => a.Anniversary);
+            ViewBag.ExpiredMembers = expiredMembers;
+            return View();
+        }
+
         public ActionResult FloorRentalOnly()
         {
             var floorView = db.OKSwingMemberLists.Where(f => f.ClassID == (int)ColorLevel.FloorRentalOnly).OrderBy(of => of.LastName);
@@ -136,17 +143,12 @@ namespace SCCheckinV3.Controllers
         /* Missing in Action means a dancer whos last recorded check in is over 60 days ago.*/
         public ActionResult MissingInAction()
         {
-            var memberList = db.OKSwingMemberLists.ToList();
+            DateTime lastTenYears = DateTime.Now.AddYears(-10);
+            var memberList = db.OKSwingMemberLists.Where(er => er.EmailAddress != null && er.EmailAddress != string.Empty);
             List<OKSwingMemberList> missingInAction = new List<OKSwingMemberList>();
-            List<OKSwingMemberList> expiredAnniversary = new List<OKSwingMemberList>();
-            List<DateTime> lastCheckInList = new List<DateTime>();
             DateTime sixtyDays = DateTime.Now.AddDays(-60);
             foreach(OKSwingMemberList mem in memberList)
             {
-                if(mem.Anniversary < DateTime.Now)
-                {
-                    expiredAnniversary.Add(mem);
-                }
                 DateTime lastCheck = lastCheckIn(mem.MemberID);
                 if (sixtyDays > lastCheck)
                 {
@@ -154,7 +156,6 @@ namespace SCCheckinV3.Controllers
                     missingInAction.Add(mem);
                 }
             }
-            ViewBag.ExpiredAnniversary = expiredAnniversary.OrderBy(o => o.LastName);
             ViewBag.MissingInAction = missingInAction.OrderBy(o => o.LastName);
             return View();
         }
@@ -165,13 +166,13 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var memberList = db.OKSwingMemberLists.ToList();
+            var memberList = db.OKSwingMemberLists.Where(er => er.EmailAddress != null || er.EmailAddress != string.Empty).ToList();
             List<OKSwingMemberList> missingInAction = new List<OKSwingMemberList>();
             List<OKSwingMemberList> expiredAnniversary = new List<OKSwingMemberList>();
             DateTime sixtyDays = beginningDate.AddDays(-60);
             foreach (OKSwingMemberList mem in memberList)
             {
-                if (mem.Anniversary < DateTime.Now)
+                if (mem.Anniversary < beginningDate)
                 {
                     expiredAnniversary.Add(mem);
                 }
@@ -470,27 +471,28 @@ namespace SCCheckinV3.Controllers
          * 4 = Dancers in Lessons
          * 5 = Deleted Members
          * 6 = Email List
-         * 7 = Expiring Members
-         * 8 = Green Dancers
-         * 9 = Modified Members
-         * 10 = Missing In Action
-         * 11 = Monthly Dancers
-         * 12 = New Dancers
-         * 13 = New Members
-         * 14 = Non Returning Members
-         * 15 = Pink Dancers
-         * 16 = Purple Dancers
-         * 17 = Renewing Members
-         * 18 = Special Events
-         * 19 = Teacher List
-         * 20 = Todays Dancers
-         * 21 = Todays Paying Dancers
-         * 22 = Todays Summary
-         * 23 = Unknown Dancers
-         * 24 = Voided Entries
-         * 25 = Yearly Dues
-         * 26 = Year Over Year Sales
-         * 27 = Yellow Dancers
+         * 7 = Expired Members
+         * 8 = Expiring Members
+         * 9 = Green Dancers
+         * 10 = Modified Members
+         * 11 = Missing In Action
+         * 12 = Monthly Dancers
+         * 13 = New Dancers
+         * 14 = New Members
+         * 15 = Non Returning Members
+         * 16 = Pink Dancers
+         * 17 = Purple Dancers
+         * 18 = Renewing Members
+         * 19 = Special Events
+         * 20 = Teacher List
+         * 21 = Todays Dancers
+         * 22 = Todays Paying Dancers
+         * 23 = Todays Summary
+         * 24 = Unknown Dancers
+         * 25 = Voided Entries
+         * 26 = Yearly Dues
+         * 27 = Year Over Year Sales
+         * 28 = Yellow Dancers
          */
         public ActionResult convertToExcel(int whichReport)
         {
@@ -551,6 +553,8 @@ namespace SCCheckinV3.Controllers
                 case 26:
                     break;
                 case 27:
+                    break;
+                case 28:
                     break;
                 default:
                     break;
