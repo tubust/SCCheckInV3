@@ -265,22 +265,47 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult NonReturningMembers()
         {
-            var nonReturn = db.OKSwingMemberLists.Where(a => a.Anniversary > DateTime.Now && DateTime.Now.Subtract(a.NewMemberDate).Days <= 59);
+            DateTime beginningDate = DateTime.Now;
+            var nonReturn = db.OKSwingMemberLists.Where(a => a.Anniversary > beginningDate).OrderBy(l => l.LastName);
             List<OKSwingMemberList> nonReturnList = new List<OKSwingMemberList>();
             foreach (OKSwingMemberList nr in nonReturn)
             {
                 if(DateTime.Now.Subtract(LastCheckIn(nr.MemberID)).Days > 31)
                 {
-                    nonReturnList.Add(nr);
+                    if (nr.Address != string.Empty || nr.HomePhone != string.Empty)
+                    {
+                        nonReturnList.Add(nr);
+                    }
                 }
             }
             ViewBag.NonReturningMembers = nonReturnList;
             return View();
         }
 
+        [HttpPost]
+        public ActionResult NonReturningMembers(DateTime startDate)
+        {
+            DateTime beginningDate;
+            if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                beginningDate = DateTime.Now;
+            var nonReturn = db.OKSwingMemberLists.Where(a => a.Anniversary > beginningDate).OrderBy(l => l.LastName).ThenBy(f => f.FirstName);
+            List<OKSwingMemberList> nonReturnList = new List<OKSwingMemberList>();
+            foreach (OKSwingMemberList nr in nonReturn)
+            {
+                if (DateTime.Now.Subtract(LastCheckIn(nr.MemberID)).Days > 31)
+                {
+                    if (nr.Address != string.Empty || nr.HomePhone != string.Empty)
+                    {
+                        nonReturnList.Add(nr);
+                    }
+                }
+            }
+            return Json(new { NonReturningMembers = nonReturnList });
+        }
+
         public ActionResult PinkDancers()
         {
-            var pinkDancers = db.OKSwingMemberLists.Where(pi => pi.ClassID == (int)ColorLevel.Pink).OrderBy(o => o.LastName);
+            var pinkDancers = db.OKSwingMemberLists.Where(pi => pi.ClassID == (int)ColorLevel.Pink).OrderBy(o => o.LastName).ThenBy(f => f.FirstName);
             ViewBag.PinkDancers = pinkDancers;
             return View();
         }
