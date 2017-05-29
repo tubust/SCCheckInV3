@@ -3,5 +3,55 @@
     ViewBag.Title = "NewDancers";
 }
 
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/NewDancers",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.NewDancers;
+                    $(".firstTable").empty();
+                    $(".firstTable").append("<tr><th>Name</th><th>Anniversary</th><th>Home Phone</th><th>Address</th></tr>");
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        const month = ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                        var dateString = theData[i].Anniversary.substr(6);
+                        var currentTime = new Date(parseInt(dateString));
+                        var theDate = month[currentTime.getMonth()] + " " + currentTime.getDate() + ", " + currentTime.getFullYear();
+                        $(".firstTable").append("<tr><td>" + theData[i].LastName + ", " + theData[i].FirstName + "</td><td>" + theDate + "</td><td>" + theData[i].HomePhone + "</td><td>" + theData[i].Address + "," + theData[i].City + "," + theData[i].State + "," + theData[i].Zip + "</td></tr>");
+                    }
+                },
+                error: function (ex) {
+                    alert("Something Went Wrong.");
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
+
 <h2>NewDancers</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table width="100%" border="1" class="firstTable">
+    <tr><th>Name</th><th>Anniversary</th><th>Home Phone</th><th>Address</th></tr>
+    @foreach(OKSwingMemberList mem in ViewBag.NewDancers)
+    {
+        String formattedDate = mem.Anniversary.Value.ToLongDateString().Replace(mem.Anniversary.Value.DayOfWeek.ToString() + ", ", "");
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@formattedDate</td><td>@mem.HomePhone</td><td>@mem.Address, @mem.City, @mem.State, @mem.Zip</td></tr>
+    }
+</table>
 

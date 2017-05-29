@@ -204,7 +204,9 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult NewDancers()
         {
-            var newDancers = db.OKSwingMemberLists.Where(s => s.NewMemberDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && s.NewMemberDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            DateTime beginDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1);
+            var newDancers = db.OKSwingMemberLists.Where(s => s.NewMemberDate >= beginDate && s.NewMemberDate <= endDate).OrderBy(o => o.LastName);
             ViewBag.NewDancers = newDancers;
             return View();
         }
@@ -213,9 +215,12 @@ namespace SCCheckinV3.Controllers
         public ActionResult NewDancers(DateTime startDate)
         {
             DateTime beginningDate;
+            DateTime endDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var newDancers = db.OKSwingMemberLists.Where(s => s.NewMemberDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && s.NewMemberDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, 1);
+            endDate = new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1);
+            var newDancers = db.OKSwingMemberLists.Where(s => s.NewMemberDate >= beginningDate && s.NewMemberDate <= endDate).OrderBy(o => o.LastName);
             return Json(new { NewDancers = newDancers });
         }
 
