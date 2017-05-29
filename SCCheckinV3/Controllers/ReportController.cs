@@ -143,13 +143,12 @@ namespace SCCheckinV3.Controllers
         /* Missing in Action means a dancer whos last recorded check in is over 60 days ago.*/
         public ActionResult MissingInAction()
         {
-            DateTime lastTenYears = DateTime.Now.AddYears(-10);
             var memberList = db.OKSwingMemberLists.Where(er => er.EmailAddress != null && er.EmailAddress != string.Empty);
             List<OKSwingMemberList> missingInAction = new List<OKSwingMemberList>();
             DateTime sixtyDays = DateTime.Now.AddDays(-60);
             foreach(OKSwingMemberList mem in memberList)
             {
-                DateTime lastCheck = lastCheckIn(mem.MemberID);
+                DateTime lastCheck = LastCheckIn(mem.MemberID);
                 if (sixtyDays > lastCheck)
                 {
                     mem.Dateadded = lastCheck.ToShortDateString();
@@ -166,27 +165,26 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var memberList = db.OKSwingMemberLists.Where(er => er.EmailAddress != null || er.EmailAddress != string.Empty).ToList();
+            var memberList = db.OKSwingMemberLists.Where(er => er.EmailAddress != null && er.EmailAddress != string.Empty).ToList();
             List<OKSwingMemberList> missingInAction = new List<OKSwingMemberList>();
-            List<OKSwingMemberList> expiredAnniversary = new List<OKSwingMemberList>();
             DateTime sixtyDays = beginningDate.AddDays(-60);
             foreach (OKSwingMemberList mem in memberList)
             {
-                if (mem.Anniversary < beginningDate)
+                DateTime lastCheck = LastCheckIn(mem.MemberID);
+                if (sixtyDays > lastCheck)
                 {
-                    expiredAnniversary.Add(mem);
-                }
-                if (sixtyDays > lastCheckIn(mem.MemberID))
-                {
+                    mem.Dateadded = lastCheck.ToShortDateString();
                     missingInAction.Add(mem);
                 }
             }
-            return Json(new { ExpiredAnniversary = expiredAnniversary.OrderBy(o => o.LastName), MissingInAction = missingInAction.OrderBy(o => o.LastName) } );
+            return Json(new { MissingInAction = missingInAction.OrderBy(o => o.LastName) } );
         }
 
         public ActionResult MonthlyDancers()
         {
-            var monthlyDancers = db.CheckIns.Where(m => m.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && m.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
+            DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1);
+            var monthlyDancers = db.CheckIns.Where(m => m.PaidDate >= beginningDate && m.PaidDate <= endDate).OrderBy(o => o.LastName).ThenBy(f => f.FirstName);
             ViewBag.MonthlyDancers = monthlyDancers;
             return View();
         }
@@ -195,9 +193,12 @@ namespace SCCheckinV3.Controllers
         public ActionResult MonthlyDancers(DateTime startDate)
         {
             DateTime beginningDate;
+            DateTime endDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var monthlyDancers = db.CheckIns.Where(m => m.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && m.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, 1);
+            endDate = new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1);
+            var monthlyDancers = db.CheckIns.Where(m => m.PaidDate >= beginningDate && m.PaidDate <= endDate).OrderBy(o => o.LastName).ThenBy(f => f.FirstName);
             return Json(new { MonthlyDancers = monthlyDancers } );
         }
 
@@ -224,7 +225,7 @@ namespace SCCheckinV3.Controllers
             List<CheckIn> newMemberList = new List<CheckIn>();
             foreach (CheckIn mem in newMemberList)
             {
-                if(!isRenewingMember((int)mem.MemberID))
+                if(!IsRenewingMember((int)mem.MemberID))
                 {
                     newMemberList.Add(mem);
                 }
@@ -243,7 +244,7 @@ namespace SCCheckinV3.Controllers
             List<CheckIn> newMemberList = new List<CheckIn>();
             foreach (CheckIn mem in newMemberList)
             {
-                if (!isRenewingMember((int)mem.MemberID))
+                if (!IsRenewingMember((int)mem.MemberID))
                 {
                     newMemberList.Add(mem);
                 }
@@ -257,7 +258,7 @@ namespace SCCheckinV3.Controllers
             List<OKSwingMemberList> nonReturnList = new List<OKSwingMemberList>();
             foreach (OKSwingMemberList nr in nonReturn)
             {
-                if(DateTime.Now.Subtract(lastCheckIn(nr.MemberID)).Days > 31)
+                if(DateTime.Now.Subtract(LastCheckIn(nr.MemberID)).Days > 31)
                 {
                     nonReturnList.Add(nr);
                 }
@@ -286,7 +287,7 @@ namespace SCCheckinV3.Controllers
             List<CheckIn> reNewMemberList = new List<CheckIn>();
             foreach (CheckIn mem in reNewMemberList)
             {
-                if (isRenewingMember((int)mem.MemberID))
+                if (IsRenewingMember((int)mem.MemberID))
                 {
                     reNewMemberList.Add(mem);
                 }
@@ -305,7 +306,7 @@ namespace SCCheckinV3.Controllers
             List<CheckIn> reNewMemberList = new List<CheckIn>();
             foreach (CheckIn mem in reNewMemberList)
             {
-                if (isRenewingMember((int)mem.MemberID))
+                if (IsRenewingMember((int)mem.MemberID))
                 {
                     reNewMemberList.Add(mem);
                 }
@@ -446,14 +447,14 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
-        private bool isRenewingMember(int memberID)
+        private bool IsRenewingMember(int memberID)
         {
             int memID = (int)memberID;
             int yearlyCount = db.CheckIns.Count(ye => ye.DanceType == 2 && ye.MemberID == memID);
             return (yearlyCount > 1);
         }
 
-        public DateTime lastCheckIn(int memberID)
+        public DateTime LastCheckIn(int memberID)
         {
             var checkInDates = db.CheckIns.Where(ch => ch.MemberID == memberID).OrderByDescending(c => c.CreateDate);
             foreach(CheckIn chk in checkInDates)

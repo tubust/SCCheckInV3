@@ -3,15 +3,50 @@
     ViewBag.Title = "MissingInAction";
 }
 
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/MissingInAction",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.MissingInAction;
+                    $(".firstTable").empty();
+                    $(".firstTable").append("<tr><th>Name</th><th>Last Recorded Activity Date</th><th>Contact Email</th></tr>");
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        $(".firstTable").append("<tr><td>" + theData[i].LastName + ", " + theData[i].FirstName + "</td><td>" + theData[i].Dateadded + "</td><td>" + theData[i].EmailAddress + "</td></tr>");
+                    }
+                },
+                error: function (ex) {
+                    alert("Something Went Wrong. The Appliction Reported: " + ex);
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
+
 <h2>MissingInAction</h2>
 @Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
 
-<table width="100%" border="1">
-    <tr><th>Missing In Action</th></tr>
-    <tr><th>Name</th><th>Last Recorded Activity Date</th><th>Email</th><th>Address</th></tr>
+<table width="100%" border="1" class="firstTable">
+    <tr><th>Name</th><th>Last Recorded Activity Date</th><th>Contact Email</th></tr>
     @foreach (OKSwingMemberList mem in ViewBag.MissingInAction)
     {
-        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.Dateadded</td><td>@mem.EmailAddress</td><td>@mem.Address,@mem.City,@mem.State,@mem.Zip</td></tr>
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.Dateadded</td><td>@mem.EmailAddress</td></tr>
     }
 </table>
 
