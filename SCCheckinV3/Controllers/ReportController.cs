@@ -226,16 +226,19 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult NewMembers()
         {
-            var newMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && nm.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
-            List<CheckIn> newMemberList = new List<CheckIn>();
-            foreach (CheckIn mem in newMemberList)
+            DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endDate = beginningDate.AddMonths(1).AddSeconds(-1);
+            var newMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= beginningDate && nm.PaidDate <= endDate).OrderBy(o => o.LastName);
+            List<OKSwingMemberList> newMemberList = new List<OKSwingMemberList>();
+            foreach (CheckIn mem in newMembers)
             {
                 if(!IsRenewingMember((int)mem.MemberID))
                 {
-                    newMemberList.Add(mem);
+                    List<OKSwingMemberList> theNewMember = db.OKSwingMemberLists.Where(m => m.MemberID == mem.MemberID).ToList();
+                    newMemberList.Add(theNewMember[0]);
                 }
             }
-            ViewBag.NewMembers = newMemberList;
+            ViewBag.NewMembers = newMemberList.OrderBy(l => l.LastName);
             return View();
         }
 
@@ -245,16 +248,19 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var newMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && nm.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
-            List<CheckIn> newMemberList = new List<CheckIn>();
-            foreach (CheckIn mem in newMemberList)
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, 1);
+            DateTime endDate = beginningDate.AddMonths(1).AddSeconds(-1);
+            var newMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= beginningDate && nm.PaidDate <= endDate);
+            List<OKSwingMemberList> newMemberList = new List<OKSwingMemberList>();
+            foreach (CheckIn mem in newMembers)
             {
                 if (!IsRenewingMember((int)mem.MemberID))
                 {
-                    newMemberList.Add(mem);
+                    List<OKSwingMemberList> newMemberItem = db.OKSwingMemberLists.Where(m => m.MemberID == mem.MemberID).ToList();
+                    newMemberList.Add(newMemberItem[0]);
                 }
             }
-            return Json(new { NewMembers = newMemberList });
+            return Json(new { NewMembers = newMemberList.OrderBy(l => l.LastName) });
         }
 
         public ActionResult NonReturningMembers()
@@ -288,13 +294,16 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult RenewingMembers()
         {
-            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && nm.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1));
-            List<CheckIn> reNewMemberList = new List<CheckIn>();
-            foreach (CheckIn mem in reNewMemberList)
+            DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endDate = beginningDate.AddMonths(1).AddSeconds(-1);
+            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= beginningDate && nm.PaidDate <= endDate);
+            List<OKSwingMemberList> reNewMemberList = new List<OKSwingMemberList>();
+            foreach (CheckIn mem in reNewMembers)
             {
                 if (IsRenewingMember((int)mem.MemberID))
                 {
-                    reNewMemberList.Add(mem);
+                    List<OKSwingMemberList> theMember = db.OKSwingMemberLists.Where(me => me.MemberID == mem.MemberID).ToList();
+                    reNewMemberList.Add(theMember[0]);
                 }
             }
             ViewBag.RenewMembers = reNewMemberList;
@@ -307,16 +316,19 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && nm.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
-            List<CheckIn> reNewMemberList = new List<CheckIn>();
-            foreach (CheckIn mem in reNewMemberList)
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, 1);
+            DateTime endDate = beginningDate.AddMonths(1).AddSeconds(-1);
+            var reNewMembers = db.CheckIns.Where(nm => nm.PaidType == (int)PaidType.YearlyDues && nm.PaidDate >= beginningDate && nm.PaidDate <= endDate);
+            List<OKSwingMemberList> reNewMemberList = new List<OKSwingMemberList>();
+            foreach (CheckIn mem in reNewMembers)
             {
                 if (IsRenewingMember((int)mem.MemberID))
                 {
-                    reNewMemberList.Add(mem);
+                    List<OKSwingMemberList> theMember = db.OKSwingMemberLists.Where(me => me.MemberID == mem.MemberID).ToList();
+                    reNewMemberList.Add(theMember[0]);
                 }
             }
-            return Json(new { ReNewingMembers = reNewMemberList });
+            return Json(new { RenewMembers = reNewMemberList });
         }
 
         public ActionResult SpecialEvents()
@@ -455,7 +467,7 @@ namespace SCCheckinV3.Controllers
         private bool IsRenewingMember(int memberID)
         {
             int memID = (int)memberID;
-            int yearlyCount = db.CheckIns.Count(ye => ye.DanceType == 2 && ye.MemberID == memID);
+            int yearlyCount = db.CheckIns.Count(ye => ye.PaidType == (int)PaidType.YearlyDues && ye.MemberID == memID);
             return (yearlyCount > 1);
         }
 

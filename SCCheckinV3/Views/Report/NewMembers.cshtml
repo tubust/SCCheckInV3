@@ -2,6 +2,53 @@
 @{
     ViewBag.Title = "NewMembers";
 }
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/NewMembers",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.NewMembers;
+                    $(".firstTable").empty();
+                    $(".firstTable").append("<tr><th>Last Name</th><th>First Name</th><th>Date Joined</th></tr>");
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        var dateString = theData[i].NewMemberDate.substr(6);
+                        var currentTime = new Date(parseInt(dateString));
+                        var date = (currentTime.getMonth() + 1) + "/" + currentTime.getDate() + "/" + currentTime.getFullYear();
+                        $(".firstTable").append("<tr><td>" + theData[i].LastName +"</td><td>" + theData[i].FirstName + "</td><td>" + date + "</td></tr>");
+                    }
+                },
+                error: function (ex) {
+                    alert("Something Went Wrong.");
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
 
 <h2>NewMembers</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table width="100%" border="1" class="firstTable">
+    <tr><th>LastName</th><th>First Name</th><th>Date Joined</th></tr>
+    @foreach (OKSwingMemberList mem in ViewBag.NewMembers)
+    {
+        <tr><td>@mem.LastName</td><td>@mem.FirstName</td><td>@mem.NewMemberDate.ToShortDateString()</td></tr>
+    }
+</table>
 
