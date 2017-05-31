@@ -358,7 +358,9 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult SpecialEvents()
         {
-            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == (int)PaidType.SpecialEvent || sp.PaidDesc.Contains("Special") && sp.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) && sp.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddSeconds(-1)));
+            DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endDate = new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1);
+            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == (int)PaidType.SpecialEvent || sp.PaidDesc.Contains("Special")) && sp.PaidDate >= beginningDate && sp.PaidDate <= endDate);
             ViewBag.SpecialEvents = specialEvents;
             return View();
         }
@@ -369,7 +371,9 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == (int)PaidType.SpecialEvent || sp.PaidDesc.Contains("Special")) && sp.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, 1) && sp.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1));
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, 1);
+            DateTime endDate = new DateTime(beginningDate.Year, beginningDate.Month, 1).AddMonths(1).AddSeconds(-1);
+            var specialEvents = db.CheckIns.Where(sp => (sp.PaidType == (int)PaidType.SpecialEvent || sp.PaidDesc.Contains("Special")) && sp.PaidDate >= beginningDate && sp.PaidDate <= endDate);
             return Json(new { SpecialEvents = specialEvents });
         }
 
@@ -416,15 +420,14 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult TodaysSummary()
         {
+            DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            DateTime endDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddDays(1).AddSeconds(-1);
             var cashList = db.CheckIns.Where(s => s.PaidAmount > 0 && s.PaidDesc.EndsWith("PAID BY CASH")
-            && s.CreateDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)
-            && s.CreateDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddDays(1).AddSeconds(-1));
+                && s.CreateDate >= beginningDate && s.CreateDate <= endDate);
             var checkList = db.CheckIns.Where(s => s.PaidAmount > 0 && s.PaidDesc.EndsWith("PAID BY CHECK")
-            && s.CreateDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)
-            && s.CreateDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddDays(1).AddSeconds(-1));
+                && s.CreateDate >= beginningDate && s.CreateDate <= endDate);
             var cardList = db.CheckIns.Where(s => s.PaidAmount > 0 && s.PaidDesc.EndsWith("PAID BY CREDIT CARD")
-            && s.CreateDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)
-            && s.CreateDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddDays(1).AddSeconds(-1));
+                && s.CreateDate >= beginningDate && s.CreateDate <= endDate);
             ViewBag.CashList = cashList;
             ViewBag.CheckList = checkList;
             ViewBag.CardList = cardList;
@@ -437,15 +440,14 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day);
+            DateTime endDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddDays(1).AddSeconds(-1);
             var cashList = db.CheckIns.Where(s => s.PaidAmount > 0 && s.PaidDesc.EndsWith("PAID BY CASH")
-            && s.CreateDate >= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day)
-            && s.CreateDate <= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddDays(1).AddSeconds(-1));
+                && s.CreateDate >= beginningDate && s.CreateDate <= endDate);
             var checkList = db.CheckIns.Where(s => s.PaidAmount > 0 && s.PaidDesc.EndsWith("PAID BY CHECK")
-            && s.CreateDate >= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day)
-            && s.CreateDate <= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddDays(1).AddSeconds(-1));
+                && s.CreateDate >= beginningDate && s.CreateDate <= endDate);
             var cardList = db.CheckIns.Where(s => s.PaidAmount > 0 && s.PaidDesc.EndsWith("PAID BY CREDIT CARD")
-            && s.CreateDate >= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day)
-            && s.CreateDate <= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddDays(1).AddSeconds(-1));
+                && s.CreateDate >= beginningDate && s.CreateDate <= endDate);
             return Json(new { CashList = cashList, CheckList = checkList, CardList = cardList });
         }
 
