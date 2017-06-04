@@ -386,7 +386,9 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult TodaysDancers()
         {
-            var todaysDancers = db.CheckIns.Where(p => p.PaidDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) && p.PaidDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddDays(1).AddSeconds(-1));
+            DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            DateTime endDate = beginningDate.AddDays(1).AddSeconds(-1);
+            var todaysDancers = db.CheckIns.Where(p => p.PaidDate >= beginningDate && p.PaidDate <= endDate);
             ViewBag.TodaysDancers = todaysDancers;
             return View();
         }
@@ -397,13 +399,17 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var todaysDancers = db.CheckIns.Where(p => p.PaidDate >= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day) && p.PaidDate <= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddDays(1).AddSeconds(-1));
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day);
+            DateTime endDate = beginningDate.AddDays(1).AddSeconds(-1);
+            var todaysDancers = db.CheckIns.Where(p => p.PaidDate >= beginningDate && p.PaidDate <= endDate);
             return Json(new { TodaysDancers = todaysDancers });
         }
 
         public ActionResult TodaysPayingDancers()
         {
-            var todaysPayers = db.CheckIns.Where(r => r.PaidType != (int)PaidType.CheckIn && r.PaidType != (int)PaidType.Exempt && r.CreateDate >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) && r.CreateDate <= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddDays(1).AddSeconds(-1));
+            DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            DateTime endDate = beginningDate.AddDays(1).AddSeconds(-1);
+            var todaysPayers = db.CheckIns.Where(r => r.PaidType != (int)PaidType.CheckIn && r.PaidType != (int)PaidType.Exempt && r.CreateDate >= beginningDate && r.CreateDate <= endDate);
             ViewBag.TodaysPayingDancers = todaysPayers;
             return View();
         }
@@ -414,7 +420,9 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var todaysPayers = db.CheckIns.Where(r => r.PaidType != (int)PaidType.CheckIn && r.PaidType != (int)PaidType.Exempt && r.CreateDate >= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day) && r.CreateDate <= new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddDays(1).AddSeconds(-1));
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day);
+            DateTime endDate = beginningDate.AddDays(1).AddSeconds(-1);
+            var todaysPayers = db.CheckIns.Where(r => r.PaidType != (int)PaidType.CheckIn && r.PaidType != (int)PaidType.Exempt && r.CreateDate >= beginningDate && r.CreateDate <= endDate);
             return Json(new { TodaysPayingDancers = todaysPayers });
         }
 
@@ -467,8 +475,10 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult YearlyDues()
         {
-            var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == (int)PaidType.YearlyDues && p.PaidDate.Value >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
-            && p.PaidDate.Value <= new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1).AddSeconds(-1));
+            DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddMonths(1).AddSeconds(-1);
+            var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == (int)PaidType.YearlyDues && p.PaidDate.Value >= beginningDate
+            && p.PaidDate.Value <= endDate);
             ViewBag.YearlyDues = yearlyDuesList;
             return View();
         }
@@ -479,8 +489,10 @@ namespace SCCheckinV3.Controllers
             DateTime beginningDate;
             if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
                 beginningDate = DateTime.Now;
-            var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == (int)PaidType.YearlyDues && p.PaidDate.Value >= new DateTime(beginningDate.Year, beginningDate.Month, 1)
-            && p.PaidDate.Value <= new DateTime(beginningDate.Year, beginningDate.Month + 1, 1).AddSeconds(-1));
+            beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, 1);
+            DateTime endDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day).AddMonths(1).AddSeconds(-1);
+            var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == (int)PaidType.YearlyDues && p.PaidDate.Value >= beginningDate
+            && p.PaidDate.Value <= endDate);
             return Json(new { YearlyDues = yearlyDuesList });
         }
 
