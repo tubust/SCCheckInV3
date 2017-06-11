@@ -388,7 +388,7 @@ namespace SCCheckinV3.Controllers
         {
             DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             DateTime endDate = beginningDate.AddDays(1).AddSeconds(-1);
-            var todaysDancers = db.CheckIns.Where(p => p.PaidDate >= beginningDate && p.PaidDate <= endDate);
+            var todaysDancers = db.CheckIns.Where(p => p.PaidDate >= beginningDate && p.PaidDate <= endDate).OrderBy(o => o.LastName).ThenBy(f => f.FirstName);
             ViewBag.TodaysDancers = todaysDancers;
             return View();
         }
@@ -401,7 +401,7 @@ namespace SCCheckinV3.Controllers
                 beginningDate = DateTime.Now;
             beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day);
             DateTime endDate = beginningDate.AddDays(1).AddSeconds(-1);
-            var todaysDancers = db.CheckIns.Where(p => p.PaidDate >= beginningDate && p.PaidDate <= endDate);
+            var todaysDancers = db.CheckIns.Where(p => p.PaidDate >= beginningDate && p.PaidDate <= endDate).OrderBy(o => o.LastName).ThenBy(f => f.FirstName);
             return Json(new { TodaysDancers = todaysDancers });
         }
 
@@ -409,7 +409,7 @@ namespace SCCheckinV3.Controllers
         {
             DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             DateTime endDate = beginningDate.AddDays(1).AddSeconds(-1);
-            var todaysPayers = db.CheckIns.Where(r => r.PaidType != (int)PaidType.CheckIn && r.PaidType != (int)PaidType.Exempt && r.CreateDate >= beginningDate && r.CreateDate <= endDate);
+            var todaysPayers = db.CheckIns.Where(r => r.PaidType != (int)PaidType.CheckIn && r.PaidType != (int)PaidType.Exempt && r.CreateDate >= beginningDate && r.CreateDate <= endDate).OrderBy(o => o.PaidDesc).ThenBy(l => l.LastName).ThenBy(f => f.FirstName);
             ViewBag.TodaysPayingDancers = todaysPayers;
             return View();
         }
@@ -422,7 +422,7 @@ namespace SCCheckinV3.Controllers
                 beginningDate = DateTime.Now;
             beginningDate = new DateTime(beginningDate.Year, beginningDate.Month, beginningDate.Day);
             DateTime endDate = beginningDate.AddDays(1).AddSeconds(-1);
-            var todaysPayers = db.CheckIns.Where(r => r.PaidType != (int)PaidType.CheckIn && r.PaidType != (int)PaidType.Exempt && r.CreateDate >= beginningDate && r.CreateDate <= endDate);
+            var todaysPayers = db.CheckIns.Where(r => r.PaidType != (int)PaidType.CheckIn && r.PaidType != (int)PaidType.Exempt && r.CreateDate >= beginningDate && r.CreateDate <= endDate).OrderBy(o => o.PaidDesc).ThenBy(l => l.LastName).ThenBy(f => f.FirstName);
             return Json(new { TodaysPayingDancers = todaysPayers });
         }
 

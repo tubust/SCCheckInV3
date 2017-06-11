@@ -1,7 +1,203 @@
 ﻿
 @{
     ViewBag.Title = "TodaysDancers";
+    string checkInString = "Check In Dates ";
+    bool firstTime = true;
+    string paidString = string.Empty;
+    string lastMember = "";
+    string lastMemberID = "";
+    decimal grandTotal = 0;
+    List<int> checkInDates = new List<int>();
 }
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/TodaysDancers",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.TodaysDancers;
+                    var grandTotal = 0;
+                    var checkInString = "Check In Dates ";
+                    var paidString = "";
+                    var lastMember = "";
+                    var lastMemberID = "";
+                    var firstTime = true;
+                    var checkInDates = [];
+                    $(".firstTable").empty();
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        if (lastMember !== theData[i].LastName + ", " + theData[i].FirstName)
+                        {
+                            if (firstTime === false)
+                            {
+                                checkInDates.sort(function (a, b) { return a - b; });
+                                for (var d = 0; d < checkInDates.length; d++)
+                                {
+                                    checkInString += checkInDates[d] + ",";
+                                }
+                                $(".firstTable").append("<tr><td>" + lastMember + " (" + lastMemberID + ")</td><td>" + paidString + "</td><td>" + checkInString + "</td></tr>");
+                            }
+                            else
+                            {
+                                var dateString = theData[i].PaidDate.substr(6);
+                                var currentTime = new Date(parseInt(dateString));
+                                var day = currentTime.getDate();
+                                if (theData[i].PaidDesc.indexOf("CHECK-IN") > -1) {
+                                    checkInDates.push(day);
+                                }
+                                else {
+                                    paidString += theData[i].PaidDesc + "($" + theData[i].PaidAmount + ") " + (currentTime.getMonth() + 1) + "/" + day + "/" + currentTime.getFullYear() + " ";
+                                    grandTotal += theData[i].PaidAmount;
+                                }
+                            }
+                            lastMember = theData[i].LastName + ", " + theData[i].FirstName;
+                            lastMemberID = theData[i].MemberID;
+                            checkInDates = [];
+                            if (firstTime === false)
+                            {
+                                checkInString = "Check In Dates ";
+                                paidString = "";
+                            }
+                            else
+                            {
+                                firstTime = false;
+                                continue;
+                            }
+                            if (theData[i].PaidDesc.indexOf("CHECK-IN") > -1) {
+                                var dateString = theData[i].PaidDate.substr(6);
+                                var currentTime = new Date(parseInt(dateString));
+                                var day = currentTime.getDate();
+                                checkInDates.push(day);
+                            }
+                            else {
+                                var dateString = theData[i].PaidDate.substr(6);
+                                var currentTime = new Date(parseInt(dateString));
+                                var day = currentTime.getDate();
+                                paidString += theData[i].PaidDesc + "($" + theData[i].PaidAmount + ") " + (currentTime.getMonth() + 1) + "/" + day + "/" + currentTime.getFullYear() + " ";
+                                grandTotal += theData[i].PaidAmount;
+                            }
+                        }
+                        else
+                        {
+                            if (theData[i].PaidDesc.indexOf("CHECK-IN") > -1) {
+                                var dateString = theData[i].PaidDate.substr(6);
+                                var currentTime = new Date(parseInt(dateString));
+                                var day = currentTime.getDate();
+                                checkInDates.push(day);
+                            }
+                            else {
+                                var dateString = theData[i].PaidDate.substr(6);
+                                var currentTime = new Date(parseInt(dateString));
+                                var day = currentTime.getDate();
+                                paidString += theData[i].PaidDesc + "($" + theData[i].PaidAmount + ") " + (currentTime.getMonth() + 1) + "/" + day + "/" + currentTime.getFullYear() + " ";
+                                grandTotal += theData[i].PaidAmount;
+                            }
+                        }
+                    }
+                    if (paidString !== "" && checkInString !== "")
+                    {
+                        checkInDates.sort(function (a, b) { return a - b; });
+                        for (var c = 0; c < checkInDates.length; c++) {
+                            checkInString += checkInDates[c] + ",";
+                        }
+                        $(".firstTable").append("<tr><td>" + lastMember + " (" + lastMemberID + ")</td><td>" + paidString + "</td><td>" + checkInString + "</td></tr>");
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
 
 <h2>TodaysDancers</h2>
 
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table width="100%" border="1" class="firstTable">
+    @foreach (CheckIn mem in ViewBag.TodaysDancers)
+    {
+        if (lastMember != mem.LastName + ", " + mem.FirstName)
+        {
+            if (!firstTime)
+            {
+                checkInDates.Sort();
+                foreach (int a in checkInDates)
+                {
+                    checkInString += a + ", ";
+                }
+                <tr><td>@lastMember (@lastMemberID)</td><td>@paidString</td><td>@checkInString</td></tr>
+            }
+            else
+            {
+                if (mem.PaidDesc.Contains("CHECK-IN"))
+                {
+                    checkInDates.Add(mem.PaidDate.Value.Day);
+                }
+                else
+                {
+                    paidString += mem.PaidDesc + "(" + mem.PaidAmount.Value.ToString("C") + ")\r\n" + mem.PaidDate.Value.ToShortDateString() + " ";
+                    grandTotal += mem.PaidAmount.Value;
+                }
+            }
+            lastMember = mem.LastName + ", " + mem.FirstName;
+            lastMemberID = mem.MemberID.ToString();
+            checkInDates.Clear();
+            if (!firstTime)
+            {
+                checkInString = "Check In Dates ";
+                paidString = string.Empty;
+            }
+            else
+            {
+                firstTime = false;
+                continue;
+            }
+            if (mem.PaidDesc.Contains("CHECK-IN"))
+            {
+                checkInDates.Add(mem.PaidDate.Value.Day);
+            }
+            else
+            {
+                paidString += mem.PaidDesc + "(" + mem.PaidAmount.Value.ToString("C") + ")\r\n" + mem.PaidDate.Value.ToShortDateString() + " ";
+                grandTotal += mem.PaidAmount.Value;
+            }
+        }
+        else
+        {
+            if (mem.PaidDesc.Contains("CHECK-IN"))
+            {
+                checkInDates.Add(mem.PaidDate.Value.Day);
+            }
+            else
+            {
+                paidString += mem.PaidDesc + "(" + mem.PaidAmount.Value.ToString("C") + ")\r\n" + mem.PaidDate.Value.ToShortDateString() + " ";
+                grandTotal += mem.PaidAmount.Value;
+            }
+        }
+    }
+    @if (paidString != string.Empty && checkInString != string.Empty)
+    {
+        checkInDates.Sort();
+        foreach (int a in checkInDates)
+        {
+            checkInString += a + ", ";
+        }
+        <tr><td>@lastMember (@lastMemberID)</td><td>@paidString</td><td>@checkInString</td></tr>
+    }
+</table>

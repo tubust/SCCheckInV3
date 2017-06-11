@@ -1,7 +1,93 @@
 ﻿
 @{
     ViewBag.Title = "TodaysSummary";
+    decimal cashTotal = 0, checkTotal = 0, cardTotal = 0, grandTotal = 0;
 }
 
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/TodaysSummary",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.CashList;
+                    var theData2 = data.CheckList;
+                    var theData3 = data.CardList;
+                    var cashTotal = 0;
+                    var checkTotal = 0;
+                    var cardTotal = 0;
+                    var grandTotal = 0;
+                    $(".firstTable").empty();
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        cashTotal += theData[i].PaidAmount;
+                        $(".firstTable").append("<TR><TD><B>" + theData[i].PaidDesc + "</TD><TD align=right>$" + theData[i].PaidAmount + "</TD></TR>");
+                    }
+                    grandTotal += cashTotal;
+                    $(".firstTable").append("<TR><TD align=right><B>Cash Total</B></TD><TD valign=center alighn=center><B>$" + cashTotal + "</B></TD></TR>");
+                    for (var j = 0; j < theData2.length; j++)
+                    {
+                        checkTotal += theData2[j].PaidAmount;
+                        $(".firstTable").append("<TR><TD><B>" + theData2[j].PaidDesc + "</TD><TD align=right>$" + theData2[j].PaidAmount + "</TD></TR>");
+                    }
+                    grandTotal += checkTotal;
+                    $(".firstTable").append("<TR><TD align=right><B>Check Total</B></TD><TD valign=center alighn=center><B>$" + checkTotal + "</B></TD></TR>");
+                    for (var k = 0; k < theData3.length; k++)
+                    {
+                        cardTotal += theData3[k].PaidAmount;
+                        $(".firstTable").append("<TR><TD><B>" + theData3[k].PaidDesc + "</TD><TD align=right>$" + theData3[k].PaidAmount + "</TD></TR>");
+                    }
+                    grandTotal += cardTotal;
+                    $(".firstTable").append("<TR><TD align=right><B>Card Total</B></TD><TD valign=center alighn=center><B>$" + cardTotal + "</B></TD></TR>");
+                    $(".firstTable").append("<tr><td>Grand Total:</td><td>$" + grandTotal + "</td></tr>");
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
+
 <h2>TodaysSummary</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table width="100%" border="1" class="firstTable">
+    @foreach (CheckIn mem in ViewBag.CashList)
+    {
+        cashTotal += (decimal)mem.PaidAmount;
+        <TR><TD><B>@mem.PaidDesc</B></TD><TD align=right>@mem.PaidAmount.Value.ToString("C")</TD></TR>
+    }
+    @{ grandTotal += cashTotal; }
+    <TR><TD align=right><B>Cash Total:</B></TD><TD valign=center alighn=center><B>@cashTotal.ToString("C")</B></TD></TR>
+    @foreach (CheckIn mem in ViewBag.CheckList)
+    {
+        checkTotal += (decimal)mem.PaidAmount;
+        <TR><TD><B>@mem.PaidDesc</B></TD><TD align=right>@mem.PaidAmount.Value.ToString("C")</TD></TR>
+    }
+    @{ grandTotal += checkTotal; }
+    <TR><TD align=right><B>Check Total:</B></TD><TD valign=center alighn=center><B>@checkTotal.ToString("C")</B></TD></TR>
+    @foreach (CheckIn mem in ViewBag.CardList)
+    {
+        cardTotal += (decimal)mem.PaidAmount;
+        <TR><TD><B>@mem.PaidDesc</B></TD><TD align=right>@mem.PaidAmount.Value.ToString("C")</TD></TR>
+    }
+    @{ grandTotal += cardTotal; }
+    <TR><TD align=right><B>Card Total:</B></TD><TD valign=center alighn=center><B>@cardTotal.ToString("C")</B></TD></TR>
+    <tr><td>Grand Total:</td><td>$@grandTotal.ToString("C")</td></tr>
+</table>
 

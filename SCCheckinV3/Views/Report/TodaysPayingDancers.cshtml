@@ -1,7 +1,106 @@
 ﻿
 @{
     ViewBag.Title = "TodaysPayingDancers";
+    string lastDec = string.Empty;
+    decimal intTotal = 0;
+    decimal intPageTotal = 0;
+    System.Text.StringBuilder strBuilder = new System.Text.StringBuilder();
 }
 
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/TodaysPayingDancers",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.TodaysPayingDancers;
+                    var intTotal = 0;
+                    var grandTotal = 0;
+                    var lastDec = "";
+                    var strBuilder = "";
+                    $(".firstTable").empty();
+                    for (var i = 0; i < theData.length; i++) {
+                        if (lastDec !== theData[i].PaidDesc) {
+                            if (lastDec.length > 0) {
+                                strBuilder += "<TR><TD align=right>" + lastDec + " Total</TD><TD valign=center alighn=center><B>$" + intTotal + "</B></TD><TD>&nbsp;</TD></TR>";
+                                grandTotal += intTotal;
+                                intTotal = 0;
+                            }
+                            strBuilder += "<TR><TD><B>";
+                            strBuilder += theData[i].PaidDesc;
+                            lastDec = theData[i].PaidDesc;
+                        }
+                        else {
+                            strBuilder += "<TR><TD><B>";
+                        }
+                        strBuilder += "</B>";
+                        strBuilder += "</TD><TD>";
+                        strBuilder += theData[i].PaidAmount;
+                        intTotal += theData[i].PaidAmount;
+                        strBuilder += "</TD>";
+                        strBuilder += "<TD>" + theData[i].LastName + ", " + theData[i].FirstName + "</TD></TR>";
+                    }
+                    $(".firstTable").append(strBuilder);
+                    $(".firstTable").append("<tr><td>Page Total:</td><td>$" + grandTotal + "</td></tr>");
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
+
 <h2>TodaysPayingDancers</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+
+<table border="1" class="firstTable" width="100%">
+    @foreach (CheckIn mem in ViewBag.TodaysPayingDancers)
+    {
+        if (lastDec != mem.PaidDesc)
+        {
+            if (lastDec.Length > 0)
+            {
+                strBuilder.Append("<TR><TD align=right>" + lastDec + " Total</TD><TD valign=center alighn=center><B>" + intTotal.ToString("C") + "</B></TD><TD>&nbsp;</TD></TR>");
+                intPageTotal += intTotal;
+                intTotal = 0;
+            }
+            strBuilder.Append("<TR><TD><B>");
+            strBuilder.Append(mem.PaidDesc);
+            lastDec = mem.PaidDesc;
+        }
+        else
+        {
+            strBuilder.Append("<TR><TD><B>");
+        }
+        strBuilder.Append("</B>");
+        strBuilder.Append("</TD><TD>");
+        strBuilder.Append(mem.PaidAmount.Value.ToString("C"));
+        intTotal += (decimal)mem.PaidAmount;
+        strBuilder.Append("</TD>");
+        strBuilder.Append("<TD>" + mem.LastName + ", " + mem.FirstName + "</TD></TR>");
+    }
+    @{
+        strBuilder.Append("<TR><TD align=right>" + lastDec + " Total</TD><TD valign=center alighn=center><B>" + intTotal.ToString("C") + "</B></TD><TD>&nbsp;</TD></TR>");
+        intPageTotal += intTotal;
+        strBuilder.Append("<TR><TD align=right><B>Page Total</B></TD><TD valign=center alighn=center><B>" + intPageTotal.ToString("C") + "</B></TD><TD>&nbsp;</TD></TR>");
+    }
+    @Html.Raw(strBuilder)
+</table>
+
 
