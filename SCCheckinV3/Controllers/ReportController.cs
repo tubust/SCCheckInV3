@@ -600,8 +600,11 @@ namespace SCCheckinV3.Controllers
          * 28 = Year Over Year Sales
          * 29 = Yellow Dancers
          */
-        public ActionResult convertToExcel(int whichReport)
+        [HttpPost]
+        public ActionResult ConvertToExcel(int whichReport, DateTime? startDate)
         {
+            DateTime beginningDate;
+            DateTime endDate;
             switch (whichReport)
             {
                 case 0:
