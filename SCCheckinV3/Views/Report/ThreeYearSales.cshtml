@@ -1,7 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "YearOverYearSales";
+    ViewBag.Title = "ThreeYearSales";
 }
+
 <script>
     $(document).ready(function () {
         $("#theCalendar").datepicker({
@@ -13,12 +14,12 @@
         $("#loadingImage").hide();
         $("#theCalendar").change(function (event) {
             $.ajax({
-                url: "/Report/YearOverYearSales",
+                url: "/Report/ThreeYearSales",
                 type: 'POST',
                 data: { startDate: $("#theCalendar").val() },
                 dataType: 'json',
                 success: function (data) {
-                    var theData = data.YearOverYearSales;
+                    var theData = data;
                     $(".firstTable").empty();
                     $(".firstTable").append("<TR><TH>Name</TH><TH>Amount Paid</TH><TH>Payment Description</TH><TH>Date Created</TH></TR>");
                     for (var i = 0; i < theData.length; i++)
@@ -42,16 +43,15 @@
     });
 </script>
 
-<h2>YearOverYearSales</h2>
+<h2>ThreeYearSales</h2>
 @Html.ActionLink("Return To Home", "Index", "Home")
 <p>Date: <input type="text" id="theCalendar" /></p>
 <img src="~/Pictures/gears.gif" id="loadingImage" />
 
 <table width="100%" border="1" class="firstTable">
     <tr><th>Name</th><th>Amount Paid</th><th>Payment Description</th><th>Date Created</th></tr>
-    @foreach(CheckIn mem in ViewBag.YearOverYearSales)
+    @foreach (CheckIn mem in ViewBag.ThreeYearSales)
     {
         <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.PaidAmount.Value.ToString("C")</td><td>@mem.PaidDesc</td><td>@mem.CreateDate.ToShortDateString()</td></tr>
     }
 </table>
-

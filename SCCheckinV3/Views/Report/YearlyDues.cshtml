@@ -2,6 +2,53 @@
 @{
     ViewBag.Title = "YearlyDues";
 }
+<script>
+    $(document).ready(function () {
+        $("#theCalendar").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: new Date(2000, 1 - 1, 1),
+            maxDate: "+1Y"
+        });
+        $("#loadingImage").hide();
+        $("#theCalendar").change(function (event) {
+            $.ajax({
+                url: "/Report/YearlyDues",
+                type: 'POST',
+                data: { startDate: $("#theCalendar").val() },
+                dataType: 'json',
+                success: function (data) {
+                    var theData = data.YearlyDues;
+                    $(".firstTable").empty();
+                    for (var i = 0; i < theData.length; i++)
+                    {
+                        var dateString = theData[i].PaidDate.substr(6);
+                        var currentTime = new Date(parseInt(dateString));
+                        var month = currentTime.getMonth() + 1;
+                        var day = currentTime.getDate();
+                        var year = currentTime.getFullYear();
+                        $(".firstTable").append("<TR><TD>" + theData[i].LastName + ", " + theData[i].FirstName + "(" + theData[i].MemberID + ")</TD><TD>" + theData[i].PaidDesc + "($" + theData[i].PaidAmount + ") " + month + "/" + day + "/" + year + "</TD></TR>");
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+        $(document).ajaxStart(function () { $("#loadingImage").show(); })
+        $(document).ajaxStop(function () { $("#loadingImage").hide(); })
+    });
+</script>
 
 <h2>YearlyDues</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+<p>Date: <input type="text" id="theCalendar" /></p>
+<img src="~/Pictures/gears.gif" id="loadingImage" />
+
+<table width="100%" border="1" class="firstTable">
+    @foreach(CheckIn mem in ViewBag.YearlyDues)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName (@mem.MemberID)</td><td>@mem.PaidDesc (@mem.PaidAmount.Value.ToString("C")) @mem.PaidDate.Value.ToShortDateString()</td></tr>
+    }
+</table>
 

@@ -384,6 +384,31 @@ namespace SCCheckinV3.Controllers
             return View();
         }
 
+        public ActionResult ThreeYearSales()
+        {
+            DateTime beginningDate = DateTime.Now.AddYears(-3);
+            DateTime endDate = DateTime.Now;
+            var yearToYear = db.CheckIns.Where(p => p.PaidType != (int)PaidType.Exempt && p.PaidType != (int)PaidType.CheckIn && p.CreateDate >= beginningDate && p.CreateDate <= endDate).OrderBy(a => a.PaidType);
+            ViewBag.ThreeYearSales = yearToYear;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ThreeYearSales(DateTime startDate)
+        {
+            DateTime beginningDate;
+            DateTime endDate;
+            if (!DateTime.TryParse(startDate.ToString(), out endDate))
+            {
+                endDate = DateTime.Now;
+            }
+            beginningDate = endDate.AddYears(-3);
+            var yearToYear = db.CheckIns.Where(p => p.PaidType != (int)PaidType.Exempt && p.PaidType != (int)PaidType.CheckIn && p.CreateDate >= beginningDate && p.CreateDate <= endDate).OrderBy(a => a.PaidType);
+            JsonResult ThreeYearSales = Json(yearToYear);
+            ThreeYearSales.MaxJsonLength = Int32.MaxValue;
+            return ThreeYearSales;
+        }
+
         public ActionResult TodaysDancers()
         {
             DateTime beginningDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
@@ -468,8 +493,8 @@ namespace SCCheckinV3.Controllers
 
         public ActionResult VoidedEntries()
         {
-            var voidEntry = db.VoidedEntries.ToList();
-            ViewBag.VoidEntry = voidEntry;
+            var voidEntry = db.VoidedEntries.OrderByDescending(c => c.CreateDate);
+            ViewBag.VoidedEntries = voidEntry;
             return View();
         }
 
@@ -494,6 +519,29 @@ namespace SCCheckinV3.Controllers
             var yearlyDuesList = db.CheckIns.Where(p => p.PaidType == (int)PaidType.YearlyDues && p.PaidDate.Value >= beginningDate
             && p.PaidDate.Value <= endDate);
             return Json(new { YearlyDues = yearlyDuesList });
+        }
+
+        public ActionResult YearOverYearSales()
+        {
+            DateTime beginningDate = DateTime.Now.AddYears(-1);
+            DateTime endDate = DateTime.Now;
+            var yearToYear = db.CheckIns.Where(p => p.PaidType != (int)PaidType.Exempt && p.PaidType != (int)PaidType.CheckIn && p.CreateDate >= beginningDate && p.CreateDate <= endDate).OrderBy(a => a.PaidType);
+            ViewBag.YearOverYearSales = yearToYear;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult YearOverYearSales(DateTime startDate)
+        {
+            DateTime beginningDate;
+            DateTime endDate;
+            if(!DateTime.TryParse(startDate.ToString(), out endDate))
+            {
+                endDate = DateTime.Now;
+            }
+            beginningDate = endDate.AddYears(-1);
+            var yearToYear = db.CheckIns.Where(p => p.PaidType != (int)PaidType.Exempt && p.PaidType != (int)PaidType.CheckIn && p.CreateDate >= beginningDate && p.CreateDate <= endDate).OrderBy(a => a.PaidType);
+            return Json(new { YearOverYearSales = yearToYear });
         }
 
         public ActionResult YellowDancers()
@@ -542,14 +590,15 @@ namespace SCCheckinV3.Controllers
          * 18 = Renewing Members
          * 19 = Special Events
          * 20 = Teacher List
-         * 21 = Todays Dancers
-         * 22 = Todays Paying Dancers
-         * 23 = Todays Summary
-         * 24 = Unknown Dancers
-         * 25 = Voided Entries
-         * 26 = Yearly Dues
-         * 27 = Year Over Year Sales
-         * 28 = Yellow Dancers
+         * 21 = Three Year Sales
+         * 22 = Todays Dancers
+         * 23 = Todays Paying Dancers
+         * 24 = Todays Summary
+         * 25 = Unknown Dancers
+         * 26 = Voided Entries
+         * 27 = Yearly Dues
+         * 28 = Year Over Year Sales
+         * 29 = Yellow Dancers
          */
         public ActionResult convertToExcel(int whichReport)
         {
@@ -612,6 +661,8 @@ namespace SCCheckinV3.Controllers
                 case 27:
                     break;
                 case 28:
+                    break;
+                case 29:
                     break;
                 default:
                     break;

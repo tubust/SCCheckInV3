@@ -4,4 +4,13 @@
 }
 
 <h2>VoidedEntries</h2>
+@Html.ActionLink("Return To Home", "Index", "Home")
+
+<table width="100%" border="1">
+    <tr><th>Name</th><th>MemberID</th><th>Date Created</th><th>Authorizing Admin</th><th>Item Description</th><th>Amount of Item</th></tr>
+    @foreach(VoidedEntry mem in ViewBag.VoidedEntries)
+    {
+        <tr><td>@mem.LastName, @mem.FirstName</td><td>@mem.MemberID</td><td>@mem.CreateDate.ToLongDateString()</td><td>@mem.AuthorizedBy</td><td>@mem.PaidDesc</td><td>@mem.PaidAmount.Value.ToString("C")</td></tr>
+    }
+</table>
 

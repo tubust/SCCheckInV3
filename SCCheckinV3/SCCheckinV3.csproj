@@ -447,6 +447,7 @@
     <Content Include="Views\AddKeyCard\Index.cshtml" />
     <Content Include="Views\Report\FloorRentalOnly.cshtml" />
     <Content Include="Views\Report\ExpiredMembers.cshtml" />
+    <Content Include="Views\Report\ThreeYearSales.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
