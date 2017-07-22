@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SCCheckinV3;
+using System.IO;
+using System.Text;
 
 namespace SCCheckinV3.Controllers
 {
@@ -600,17 +602,48 @@ namespace SCCheckinV3.Controllers
          * 28 = Year Over Year Sales
          * 29 = Yellow Dancers
          */
-        [HttpPost]
-        public ActionResult ConvertToExcel(int whichReport, DateTime? startDate)
+        public FileContentResult ConvertToExcel(int whichReport, DateTime? startDate)
         {
             DateTime beginningDate;
             DateTime endDate;
+            StringBuilder theFileContents = new StringBuilder();
             switch (whichReport)
             {
                 case 0:
-                    break;
+                    if (!DateTime.TryParse(startDate.ToString(), out beginningDate))
+                    {
+                        beginningDate = DateTime.Now;
+                    }
+                    var birthdays = db.OKSwingMemberLists.Where(b => (b.BirthMonth == beginningDate.Month.ToString() || b.DOB.Value.Month == beginningDate.Month) && b.Anniversary > DateTime.Now).OrderBy(o => o.LastName);
+                    try
+                    {
+                        theFileContents.AppendLine("LastName,FirstName,BirthDate,Address,City,State,ZipCode");
+                        foreach (OKSwingMemberList mem in birthdays)
+                        {
+                            if(mem.BirthMonth != null || mem.BirthDay != null)
+                            {
+                                theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + mem.BirthMonth + "/" + mem.BirthDay + "," + mem.Address + "," + mem.City + "," + mem.State + "," + mem.Zip);
+                            }
+                            else
+                            {
+                                theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + mem.DOB.Value.Month + "/" + mem.DOB.Value.Day + "," + mem.Address + "," + mem.City + "," + mem.State + "," + mem.Zip);
+                            }
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "MemberBirthdaysFor" + beginningDate.ToString("MMMM") + ".csv");
                 case 1:
-                    break;
+                    var blueDancers = db.OKSwingMemberLists.Where(bd => bd.ClassID == (int)ColorLevel.Blue);
+                    try
+                    {
+                        theFileContents.AppendLine("Full Name,Class Level");
+                        foreach(OKSwingMemberList mem in blueDancers)
+                        {
+                            theFileContents.AppendLine(mem.LastName + " " + mem.FirstName + ",BLUE");
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "BlueDancers.csv");
                 case 2:
                     break;
                 case 3:
@@ -626,7 +659,17 @@ namespace SCCheckinV3.Controllers
                 case 8:
                     break;
                 case 9:
-                    break;
+                    var greenDancers = db.OKSwingMemberLists.Where(bd => bd.ClassID == (int)ColorLevel.Green);
+                    try
+                    {
+                        theFileContents.AppendLine("Full Name,Class Level");
+                        foreach (OKSwingMemberList mem in greenDancers)
+                        {
+                            theFileContents.AppendLine(mem.LastName + " " + mem.FirstName + ",GREEN");
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "GreenDancers.csv");
                 case 10:
                     break;
                 case 11:
@@ -640,15 +683,45 @@ namespace SCCheckinV3.Controllers
                 case 15:
                     break;
                 case 16:
-                    break;
+                    var pinkDancers = db.OKSwingMemberLists.Where(bd => bd.ClassID == (int)ColorLevel.Pink);
+                    try
+                    {
+                        theFileContents.AppendLine("Full Name,Class Level");
+                        foreach (OKSwingMemberList mem in pinkDancers)
+                        {
+                            theFileContents.AppendLine(mem.LastName + " " + mem.FirstName + ",PINK");
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "PinkDancers.csv");
                 case 17:
-                    break;
+                    var purpleDancers = db.OKSwingMemberLists.Where(bd => bd.ClassID == (int)ColorLevel.Purple);
+                    try
+                    {
+                        theFileContents.AppendLine("Full Name,Class Level");
+                        foreach (OKSwingMemberList mem in purpleDancers)
+                        {
+                            theFileContents.AppendLine(mem.LastName + " " + mem.FirstName + ",PURPLE");
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "PurpleDancers.csv");
                 case 18:
                     break;
                 case 19:
                     break;
                 case 20:
-                    break;
+                    var teacherDancers = db.OKSwingMemberLists.Where(bd => bd.ClassID == (int)ColorLevel.Teacher);
+                    try
+                    {
+                        theFileContents.AppendLine("Full Name,Class Level");
+                        foreach (OKSwingMemberList mem in teacherDancers)
+                        {
+                            theFileContents.AppendLine(mem.LastName + " " + mem.FirstName + ",TEACHER");
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "Teachers.csv");
                 case 21:
                     break;
                 case 22:
@@ -658,7 +731,17 @@ namespace SCCheckinV3.Controllers
                 case 24:
                     break;
                 case 25:
-                    break;
+                    var unknownDancers = db.OKSwingMemberLists.Where(bd => bd.ClassID == (int)ColorLevel.Unknown);
+                    try
+                    {
+                        theFileContents.AppendLine("Full Name,Class Level");
+                        foreach (OKSwingMemberList mem in unknownDancers)
+                        {
+                            theFileContents.AppendLine(mem.LastName + " " + mem.FirstName + ",UNKNOWN");
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "UnknownDancers.csv");
                 case 26:
                     break;
                 case 27:
@@ -666,11 +749,21 @@ namespace SCCheckinV3.Controllers
                 case 28:
                     break;
                 case 29:
-                    break;
+                    var yellowDancers = db.OKSwingMemberLists.Where(bd => bd.ClassID == (int)ColorLevel.Yellow);
+                    try
+                    {
+                        theFileContents.AppendLine("Full Name,Class Level");
+                        foreach (OKSwingMemberList mem in yellowDancers)
+                        {
+                            theFileContents.AppendLine(mem.LastName + " " + mem.FirstName + ",YELLOW");
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "YellowDancers.csv");
                 default:
                     break;
             }
-            return View();
+            return null;
         }
     }
 }

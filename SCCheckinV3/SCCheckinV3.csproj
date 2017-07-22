@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SCCheckinV3</RootNamespace>
     <AssemblyName>SCCheckinV3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -25,6 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -185,11 +186,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveMember.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="AprilBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="AspNetRole.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
@@ -200,6 +207,9 @@
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
     <Compile Include="AspNetUserLogin.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AugustBirthday.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
     <Compile Include="CheckIn.cs">
@@ -223,23 +233,77 @@
     <Compile Include="C__MigrationHistory.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DecemberBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DeletedMember.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Enums.cs" />
+    <Compile Include="ExpiringMember.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FeburaryBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="JanuraryBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="JulyBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="JuneBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="KeyCardTable.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MarchBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MayBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Member.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MemberBirthdays_Result.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Merchandise.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="MissingMember.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="NewMember.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NewPinkDancers_Result.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Next3MonthBirthdays_Result.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NextMonthBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NovemberBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OctoberBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="OKSwingMemberList.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PaidYearlyDuesLastMonth_Result.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
     <Compile Include="password.cs">
@@ -261,11 +325,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SCCheckinDB.edmx</DependentUpon>
     </Compile>
+    <Compile Include="SeptemberBirthday.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="tblFee.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="ThankYouMember.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="VoidedEntry.cs">
+      <DependentUpon>SCCheckinDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="YearlyDuesSoon_Result.cs">
       <DependentUpon>SCCheckinDB.tt</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -451,6 +524,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="files\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

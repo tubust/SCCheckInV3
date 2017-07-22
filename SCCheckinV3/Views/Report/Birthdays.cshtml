@@ -42,17 +42,8 @@
             });
         });
         $("#excelButton").click(function (event) {
-            $.ajax({
-                url: "/Report/ConvertToExcel",
-                type: 'POST',
-                data: { whichReport: 0, startDate: $("#theCalendar").val() },
-                success: function() {
-
-                },
-                error: function (ex) {
-                    alert(ex.responseText);
-                }
-            });
+            var date = $("#theCalendar").val();
+            window.location.href = '@Url.Action("ConvertToExcel","Report")?whichReport=0&startDate=' + date;
         });
         $(document).ajaxStart(function () { $("#loadingImage").show(); })
         $(document).ajaxStop(function () { $("#loadingImage").hide(); })
