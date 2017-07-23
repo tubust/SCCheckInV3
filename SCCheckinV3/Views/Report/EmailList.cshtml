@@ -2,9 +2,18 @@
 @{
     ViewBag.Title = "EmailList";
 }
+<script>
+    $(document).ready(function () {
+        $("#excelButton").click(function (event) {
+            var date = $("#theCalendar").val();
+            window.location.href = '@Url.Action("ConvertToExcel","Report")?whichReport=6'
+        });
+    });
+</script>
 
 <h2>EmailList</h2>
-@Html.ActionLink("Return To Home", "Index", "Home")
+@Html.ActionLink("Return To Home", "Index", "Home")<br />
+<a id="excelButton">Export To Excel</a>
 
 <table width="100%" border="1">
     <tr><th>Name</th><th>Email</th></tr>

@@ -601,6 +601,7 @@ namespace SCCheckinV3.Controllers
          * 27 = Yearly Dues
          * 28 = Year Over Year Sales
          * 29 = Yellow Dancers
+         * 30 = Floor Rental Only
          */
         public FileContentResult ConvertToExcel(int whichReport, DateTime? startDate)
         {
@@ -695,9 +696,25 @@ namespace SCCheckinV3.Controllers
                     catch { break; }
                     return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "DeletedMembers.csv");
                 case 6:
-                    break;
+                    var theEmailList = db.OKSwingMemberLists.Where(em => em.EmailAddress != null && em.EmailAddress != string.Empty).OrderBy(o => o.LastName);
+                    try
+                    {
+                        theFileContents.AppendLine("LastName,FirstName,Email");
+                        foreach(OKSwingMemberList mem in theEmailList)
+                        {
+                            theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + mem.EmailAddress);
+                        }
+                    }
+                    catch { }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "EmailList.csv");
                 case 7:
-                    break;
+                    var expiredMembers = db.OKSwingMemberLists.Where(an => an.Anniversary <= DateTime.Now && an.EmailAddress != null && an.EmailAddress != string.Empty).OrderByDescending(a => a.Anniversary);
+                    theFileContents.AppendLine("LastName,FirstName,Anniversary,Email");
+                    foreach(OKSwingMemberList mem in expiredMembers)
+                    {
+                        theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + mem.Anniversary + "," + mem.EmailAddress);
+                    }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "ExpiredMembers.csv");
                 case 8:
                     break;
                 case 9:
@@ -802,6 +819,18 @@ namespace SCCheckinV3.Controllers
                     }
                     catch { break; }
                     return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "YellowDancers.csv");
+                case 30:
+                    var floorView = db.OKSwingMemberLists.Where(f => f.ClassID == (int)ColorLevel.FloorRentalOnly).OrderBy(of => of.LastName);
+                    try
+                    {
+                        theFileContents.AppendLine("Full Name,Class Level");
+                        foreach (OKSwingMemberList mem in floorView)
+                        {
+                            theFileContents.AppendLine(mem.LastName + " " + mem.FirstName + ",FLOOR RENTAL ONLY");
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "FloorRentalOnly.csv");
                 default:
                     break;
             }
