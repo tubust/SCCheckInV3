@@ -679,7 +679,21 @@ namespace SCCheckinV3.Controllers
                 case 4:
                     break;
                 case 5:
-                    break;
+                    var deletedMemberList = db.DeletedMembers.ToList();
+                    try
+                    {
+                        theFileContents.AppendLine("LastName,FirstName,Address,City,State,Zip,Phone,Email,Date Joined,Authorized By 1,Authorized By 2");
+                        foreach (DeletedMember mem in deletedMemberList)
+                        {
+                            string filteredAddress = mem.Address == null ? string.Empty : mem.Address.Replace(",", "");
+                            string filteredCity = mem.City == null ? string.Empty : mem.City.Replace(",", "");
+                            string filteredState = mem.State == null ? string.Empty : mem.State.Replace(",", "");
+                            string filteredPhone = mem.HomePhone == null ? string.Empty : mem.HomePhone.Replace(",", "");
+                            theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + filteredAddress + "," + filteredCity + "," + filteredState + "," + mem.Zip + "," + filteredPhone + "," + mem.EmailAddress + "," + mem.DateJoined + "," + mem.AuthorizedBy);
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "DeletedMembers.csv");
                 case 6:
                     break;
                 case 7:
