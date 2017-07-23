@@ -2,9 +2,18 @@
 @{
     ViewBag.Title = "CurrentlyPaidMembers";
 }
+<script>
+    $(document).ready(function () {
+        $("#excelButton").click(function (event) {
+            var date = $("#theCalendar").val();
+            window.location.href = '@Url.Action("ConvertToExcel","Report")?whichReport=3'
+        });
+    });
+</script>
 
 <h2>CurrentlyPaidMembers</h2>
-@Html.ActionLink("Return To Home", "Index", "Home")
+@Html.ActionLink("Return To Home", "Index", "Home")<br />
+<a id="excelButton">Export To Excel</a>
 
 <table width="100%" border="1">
     <tr><th>Name</th><th>Address</th><th>Home Phone</th><th>Anniversary</th></tr>

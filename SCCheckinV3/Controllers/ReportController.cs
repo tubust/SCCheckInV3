@@ -626,7 +626,7 @@ namespace SCCheckinV3.Controllers
                             }
                             else
                             {
-                                theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + mem.DOB.Value.Month + "/" + mem.DOB.Value.Day + "," + mem.Address + "," + mem.City + "," + mem.State + "," + mem.Zip);
+                                theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + mem.DOB.Value.Month + "/" + mem.DOB.Value.Day + "," + mem.Address.Replace(",", "") + "," + mem.City.Replace(",", "") + "," + mem.State.Replace(",", "") + "," + mem.Zip.Replace(",", ""));
                             }
                         }
                     }
@@ -645,9 +645,37 @@ namespace SCCheckinV3.Controllers
                     catch { break; }
                     return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "BlueDancers.csv");
                 case 2:
-                    break;
+                    var completeList = db.OKSwingMemberLists.ToList().OrderBy(o => o.LastName);
+                    try
+                    {
+                        theFileContents.AppendLine("LastName,FirstName,Address,City,State,Zip,Phone,Email,Date Joined");
+                        foreach(OKSwingMemberList mem in completeList)
+                        {
+                            string filteredAddress = mem.Address == null ? string.Empty : mem.Address.Replace(",", "");
+                            string filteredCity = mem.City == null ? string.Empty : mem.City.Replace(",", "");
+                            string filteredState = mem.State == null ? string.Empty : mem.State.Replace(",", "");
+                            string filteredPhone = mem.HomePhone == null ? string.Empty : mem.HomePhone.Replace(",", "");
+                            theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + filteredAddress + "," + filteredCity + "," + filteredState + "," + mem.Zip + "," + filteredPhone + "," + mem.EmailAddress + "," + mem.DateJoined);
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "CompleteMemberList.csv");
                 case 3:
-                    break;
+                    var currentMembers = db.OKSwingMemberLists.Where(an => an.Anniversary > DateTime.Now).OrderBy(o => o.LastName);
+                    try
+                    {
+                        theFileContents.AppendLine("LastName,FirstName,Address,City,State,Zip,Phone,Email,Anniversary");
+                        foreach (OKSwingMemberList mem in currentMembers)
+                        {
+                            string filteredAddress = mem.Address == null ? string.Empty : mem.Address.Replace(",", "");
+                            string filteredCity = mem.City == null ? string.Empty : mem.City.Replace(",", "");
+                            string filteredState = mem.State == null ? string.Empty : mem.State.Replace(",", "");
+                            string filteredPhone = mem.HomePhone == null ? string.Empty : mem.HomePhone.Replace(",", "");
+                            theFileContents.AppendLine(mem.LastName + "," + mem.FirstName + "," + filteredAddress + "," + filteredCity + "," + filteredState + "," + mem.Zip + "," + filteredPhone + "," + mem.EmailAddress + "," + mem.Anniversary);
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "CurrentlyPaidMembers.csv");
                 case 4:
                     break;
                 case 5:
