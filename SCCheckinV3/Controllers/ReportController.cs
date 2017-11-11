@@ -678,7 +678,18 @@ namespace SCCheckinV3.Controllers
                     catch { break; }
                     return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "CurrentlyPaidMembers.csv");
                 case 4:
-                    break;
+                    var dancerInLessons = db.CheckIns.Where(d => d.PaidType == (int)PaidType.MonthlyDues || d.PaidType == (int)PaidType.Exempt).Where(p => p.PaidDate.Value.Month == DateTime.Now.Month && p.PaidDate.Value.Year == DateTime.Now.Year)
+                        .OrderBy(l => l.LastName);
+                    try
+                    {
+                        theFileContents.AppendLine("Last Name, First Name");
+                        foreach (CheckIn mem in dancerInLessons)
+                        {
+                            theFileContents.AppendLine(mem.LastName + "," + mem.FirstName);
+                        }
+                    }
+                    catch { break; }
+                    return File(new System.Text.UTF8Encoding().GetBytes(theFileContents.ToString()), "text/csv", "DancersInLessons.csv");
                 case 5:
                     var deletedMemberList = db.DeletedMembers.ToList();
                     try

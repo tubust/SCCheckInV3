@@ -36,13 +36,18 @@
                 }
             });
         });
-        $(document).ajaxStart(function () { $(".loadingImage").show(); })
-        $(document).ajaxStop(function () { $(".loadingImage").hide(); })
+        $("#excelButton").click(function (event) {
+            var date = $("#theCalendar").val();
+            window.location.href = '@Url.Action("ConvertToExcel","Report")?whichReport=4&startDate=' + $("#theCalendar").val();
+        });
+        $(document).ajaxStart(function () { $(".loadingImage").show(); });
+        $(document).ajaxStop(function () { $(".loadingImage").hide(); });
     });
 </script>
 
 <h2>DancersCurrentlyInLessons</h2>
-@Html.ActionLink("Return To Home", "Index", "Home")
+@Html.ActionLink("Return To Home", "Index", "Home")<br />
+<a id="excelButton">Export To Excel</a>
 <p>Date: <input type="text" id="theCalendar" /></p>
 <img src="~/Pictures/gears.gif" id="loadingImage" />
 
